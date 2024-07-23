@@ -34,17 +34,131 @@
     <section class="services navy-bg">
       <div class="container">
         <h2>Our Services</h2>
-        <div class="service-card">
-          <img src="images/staff-augmentation.png" alt="Staff Augmentation Icon">
-          <h3>Staff Augmentation</h3>
-          <p>Seamlessly integrate skilled developers into your existing team to accelerate development.</p>
+        <style>
+/*            .services-container {
+/*                width: 50%; 
+                width: 40%; 
+                padding: 20px;
+                border: 1px solid #333;
+                border-radius: 10px;
+                background-color: #1e1e1e;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;  
+/*                align-items: center; 
+                justify-content: flex-start; 
+                justify-content: space-between;
+                position: relative;
+                overflow: hidden;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+/*                display: flex; 
+ /*               justify-content: flex-start; 
+/*                align-items: center; 
+            } 
+            .container {
+                width: 80%;
+                margin: 0 auto;
+            }
+
+            .services-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                /* width: 100%; /* Ensure containers take full width 
+                padding: 20px;
+                border: 1px solid #333;
+                border-radius: 10px;
+                background-color: #1e1e1e;
+                box-sizing: border-box;
+                position: relative;
+                overflow: hidden;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+              } */
+
+            .services-container img {
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+                object-fit: cover;
+                border-radius: 10px;
+                position: absolute;
+                top: 0;
+                left: 0; 
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            .services-container img.active {
+                opacity: 1;
+                z-index: 1;
+            }
+            .services-container img.inactive {
+                z-index: 0;
+            }
+            .text-content {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                padding-top: 20px;
+                background: rgba(30, 30, 30, 0.8);
+                border-radius: 10px;
+            }
+            .services-container h1 {
+                font-size: 2.5em;
+                margin: 0.5em 0;
+            }
+            .services-container h2 {
+                font-size: 1.5em;
+                margin: 0.5em 0;
+                color: #b3b3b3;
+            }
+            @media (max-width: 600px) {
+                .services-container {
+                    width: 100%;
+                }
+                .services-container h1 {
+                    font-size: 2em;
+                }
+                .services-container h2 {
+                    font-size: 1.2em;
+                }
+            }
+        </style>
+        <div class="services-container">
+            <div class="text-content">
+                <h1>VelocityPLM</h1>
+                <h2>Expert Product Lifecycle Management services</h2>
+            </div>
+            <img src="./vPLMold.jpg" alt="VelocityPLM Old" class="active">
+            <img src="./vPLMnew.jpg" alt="VelocityPLM New" class="inactive">
         </div>
-        <div class="service-card">
-          <img src="images/managed-project.png" alt="Managed Project Icon">
-          <h3>Managed Project Model</h3>
-          <p>We take complete ownership of your project, from concept to deployment.</p>
+        <div class="services-container">
+            <div class="text-content">
+                <h1>BespokeSW</h1>
+                <h2>Bespoke Software Development</h2>
+            </div>
+            <img src="./vPLMold.jpg" alt="VelocityPLM Old" class="active">
+            <img src="./vPLMnew.jpg" alt="VelocityPLM New" class="inactive">
         </div>
-      </div>
+
+        <script>
+            let currentIndex = 0;
+            const images = document.querySelectorAll('.services-container img');
+
+            function showNextImage() {
+                images[currentIndex].classList.remove('active');
+                images[currentIndex].classList.add('inactive');
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].classList.remove('inactive');
+                images[currentIndex].classList.add('active');
+            }
+
+            setInterval(showNextImage, 3000);
+        </script>
+
     </section>
 
     <section class="benefits">
