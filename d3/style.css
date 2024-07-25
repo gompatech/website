@@ -9,6 +9,8 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
+  color: white;
+  /*text-align: center;*/
 }
 
 /* Header */
@@ -54,6 +56,10 @@ nav a:hover {
   transition: background-color 0.3s ease;
 }
 
+.hero a {
+  color:white;
+}
+
 /* Main content */
 main {
   padding-bottom: 50px;
@@ -71,6 +77,7 @@ h1, h2 {
 
 .hero {
   position: relative;
+  text-align: center;
 }
 
 .hero-img {
