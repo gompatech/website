@@ -63,8 +63,8 @@
     <div class="container">
         <h1>Location Map Visualization</h1>
         <div class="data-display">
-            <h3>Mock Data:</h3>
-            <pre id="mockDataDisplay"></pre>
+            <!-- <h3>Mock Data:</h3> -->
+            <!-- <pre id="mockDataDisplay"></pre> -->
         </div>
         <div id="error-message" class="error-message"></div>
         <div id="map"></div>
@@ -86,23 +86,23 @@
         //     { label1: "Oxford Street Branch", city: "London", state: "England", country: "UK" }
         // ];
         const mockData = [{ label1: "	Sonu	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
-{ label1: "	Ashish Syracuse	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
-{ label1: "	Mausaji Blr	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
-{ label1: "	Lucky	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
-{ label1: "	Rupu	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
-{ label1: "	Rob DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
-{ label1: "	Scott DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
-{ label1: "	Dave DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
-{ label1: "	Lyndon TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
-{ label1: "	Jody TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
-{ label1: "	Raj Google	",  city: "	Huntsville	",  state: ",	AL	",  country: "	USA	" },
-{ label1: "	Prashant Meta	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" },
-{ label1: "	Rahul Syracuse	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" }
-        ];
+            { label1: "	Ashish Syracuse	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
+            { label1: "	Mausaji Blr	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
+            { label1: "	Lucky	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
+            { label1: "	Rupu	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
+            { label1: "	Rob DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Scott DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Dave DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Lyndon TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
+            { label1: "	Jody TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
+            { label1: "	Raj Google	",  city: "	Huntsville	",  state: ",	AL	",  country: "	USA	" },
+            { label1: "	Prashant Meta	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" },
+            { label1: "	Rahul Syracuse	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" }
+          ];
 
         // Display mock data in the UI
-        document.getElementById('mockDataDisplay').textContent = 
-            JSON.stringify(mockData, null, 2);
+        // document.getElementById('mockDataDisplay').textContent = 
+        //     JSON.stringify(mockData, null, 2);
 
         // Initialize the map centered on the world view
         const map = L.map('map').setView([20, 0], 2);
