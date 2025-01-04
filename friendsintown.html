@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FriendsInTown</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        #map {
+            height: 600px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .popup-content {
+            margin: 0;
+            padding: 0;
+        }
+        .popup-content li {
+            list-style: none;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .popup-content li:last-child {
+            border-bottom: none;
+        }
+        .location-count {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+        .error-message {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .data-display {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Friends In Town</h1>
+        <div class="data-display">
+            <!-- <h3>Mock Data:</h3> -->
+            <!-- <pre id="mockDataDisplay"></pre> -->
+        </div>
+        <div id="error-message" class="error-message"></div>
+        <div id="map"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script>
+        // Mock data structure
+        // const mockData = [
+        //     { label1: "Flagship Store", city: "New York", state: "NY", country: "USA" },
+        //     { label1: "Downtown Branch", city: "New York", state: "NY", country: "USA" },
+        //     { label1: "Times Square Location", city: "New York", state: "NY", country: "USA" },
+        //     { label1: "Beverly Hills Store", city: "Los Angeles", state: "CA", country: "USA" },
+        //     { label1: "Hollywood Branch", city: "Los Angeles", state: "CA", country: "USA" },
+        //     { label1: "Eiffel Tower Shop", city: "Paris", state: "Île-de-France", country: "France" },
+        //     { label1: "Champs-Élysées Boutique", city: "Paris", state: "Île-de-France", country: "France" },
+        //     { label1: "Shibuya Store", city: "Tokyo", state: "Tokyo", country: "Japan" },
+        //     { label1: "Central Location", city: "London", state: "England", country: "UK" },
+        //     { label1: "Oxford Street Branch", city: "London", state: "England", country: "UK" }
+        // ];
+        const mockData = [{ label1: "	Sonu	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
+            { label1: "	Ashish Syracuse	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
+            { label1: "	Mausaji Blr	",  city: "	Bangalore	",  state: ",	Karnataka	",  country: "	India	" },
+            { label1: "	Lucky	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
+            { label1: "	Rupu	",  city: "	Pune	",  state: ",	MH	",  country: "	India	" },
+            { label1: "	Rob DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Mike DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Scott DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Dave DLH	",  city: "	Canton	",  state: ",	OH	",  country: "	USA	" },
+            { label1: "	Lyndon TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
+            { label1: "	Jody TDW	",  city: "	Tulsa	",  state: ",	OK	",  country: "	USA	" },
+            { label1: "	Raj Google	",  city: "	Huntsville	",  state: ",	AL	",  country: "	USA	" },
+            { label1: "	Prashant Meta	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" },
+            { label1: "	Rahul Syracuse	",  city: "	San Francisco	",  state: ",	CA	",  country: "	USA	" }
+          ];
+
+        // Display mock data in the UI
+        // document.getElementById('mockDataDisplay').textContent = 
+        //     JSON.stringify(mockData, null, 2);
+
+        // Initialize the map centered on the world view
+        const map = L.map('map').setView([20, 0], 2);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Store markers for cleanup
+        let markers = [];
+
+        function processData(data) {
+            try {
+                // Clear existing markers
+                clearMarkers();
+                
+                // Group data by location
+                const locationMap = new Map();
+                
+                data.forEach(row => {
+                    const locationKey = `${row.city},${row.state},${row.country}`;
+                    if (!locationMap.has(locationKey)) {
+                        locationMap.set(locationKey, []);
+                    }
+                    locationMap.get(locationKey).push(row.label1);
+                });
+
+                // Process each unique location
+                locationMap.forEach((labels, location) => {
+                    const [city, state, country] = location.split(',');
+                    geocodeAndAddMarker(city, state, country, labels);
+                });
+
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function geocodeAndAddMarker(city, state, country, labels) {
+            const query = `${city}, ${state}, ${country}`;
+            const encodedQuery = encodeURIComponent(query);
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodedQuery}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const { lat, lon } = data[0];
+                        addMarker(lat, lon, labels, `${city}, ${state}`);
+                    }
+                })
+                .catch(error => {
+                    showError(`Geocoding error for ${query}: ${error.message}`);
+                });
+        }
+
+        function addMarker(lat, lon, labels, location) {
+            const marker = L.marker([lat, lon]);
+            
+            const popupContent = document.createElement('div');
+            popupContent.className = 'popup-content';
+            
+            const locationHeader = document.createElement('h3');
+            locationHeader.textContent = location;
+            if (labels.length > 1) {
+                const count = document.createElement('span');
+                count.className = 'location-count';
+                count.textContent = `(${labels.length})`;
+                locationHeader.appendChild(count);
+            }
+            popupContent.appendChild(locationHeader);
+
+            const list = document.createElement('ul');
+            labels.forEach(label => {
+                const item = document.createElement('li');
+                item.textContent = label;
+                list.appendChild(item);
+            });
+            popupContent.appendChild(list);
+
+            marker.bindPopup(popupContent);
+            marker.addTo(map);
+            markers.push(marker);
+
+            // Adjust map view to include all markers
+            const markerBounds = L.latLngBounds(markers.map(m => m.getLatLng()));
+            map.fitBounds(markerBounds, { padding: [50, 50] });
+        }
+
+        function clearMarkers() {
+            markers.forEach(marker => marker.remove());
+            markers = [];
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Initialize the visualization with mock data
+        processData(mockData);
+    </script>
+</body>
+</html>
