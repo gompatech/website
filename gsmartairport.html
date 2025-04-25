@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gSmartAirport - Expert Predictive Maintenance for Airports</title>
+    <style>
+        :root {
+            --primary-blue: #0052cc;
+            --dark-blue: #00397a;
+            --light-blue: #e8f0fe;
+            --accent-green: #2eb82e;
+            --hover-green: #26a626;
+            --grey: #f2f2f2;
+            --dark-grey: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-blue);
+            color: var(--dark-grey);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .hero {
+            background: linear-gradient(to right, var(--primary-blue), var(--dark-blue));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-button {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--hover-green);
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+        
+        section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-blue);
+        }
+        
+        .challenges {
+            background-color: white;
+        }
+        
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .challenge-card {
+            background-color: var(--light-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .challenge-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .predictive-maintenance {
+            background-color: var(--light-blue);
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .comparison-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .comparison-card ul {
+            list-style-type: none;
+        }
+        
+        .comparison-card ul li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-card ul li::before {
+            content: "•";
+            color: var(--primary-blue);
+            position: absolute;
+            left: 0;
+        }
+        
+        .areas {
+            background-color: white;
+        }
+        
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .area-card {
+            background-color: var(--light-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .area-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .benefits {
+            background-color: var(--light-blue);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .benefit-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .advantage {
+            background-color: white;
+        }
+        
+        .advantage-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .advantage-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .advantage-content ul {
+            list-style-type: none;
+            margin-bottom: 2rem;
+        }
+        
+        .advantage-content ul li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .advantage-content ul li::before {
+            content: "✓";
+            color: var(--accent-green);
+            position: absolute;
+            left: 0;
+        }
+        
+        .contact {
+            background-color: var(--light-blue);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--dark-blue);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        footer {
+            background-color: var(--dark-grey);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            margin: 0 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            section {
+                padding: 2rem 0;
+            }
+            
+            .comparison, .areas-grid, .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="logo">gSmartAirport</div>
+            <nav>
+                <a href="#contact" class="cta-button">Contact Us</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Enhancing Airport Operations Through Predictive Insights</h1>
+            <p>Expert predictive maintenance solutions designed to optimize your airport's asset performance, reduce operational costs, and eliminate disruptions.</p>
+            <a href="#contact" class="cta-button">Schedule a Discovery Call</a>
+        </div>
+    </section>
+    
+    <section class="challenges">
+        <div class="container">
+            <h2>The Constant Challenge: Ensuring Seamless Airport Operations</h2>
+            <div class="challenges-grid">
+                <div class="challenge-card">
+                    <h3>Minimize Disruptions</h3>
+                    <p>Unexpected equipment downtime in baggage systems, aerobridges, and HVAC systems impacts flights and passenger experience, creating costly delays.</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>Manage Operational Costs</h3>
+                    <p>Reactive repairs are often expensive while scheduled maintenance might be performed too early or too late, resulting in wasted resources.</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>Uphold Safety Standards</h3>
+                    <p>Ensuring critical systems are always operational and compliant with industry regulations is paramount for airport safety.</p>
+                </div>
+                <div class="challenge-card">
+                    <h3>Enhance Passenger Satisfaction</h3>
+                    <p>Smooth journeys rely on functional infrastructure such as elevators, escalators, and climate control systems working flawlessly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="predictive-maintenance">
+        <div class="container">
+            <h2>Moving Beyond Traditional Maintenance</h2>
+            <div class="comparison">
+                <div class="comparison-card">
+                    <h3>Traditional Approaches</h3>
+                    <ul>
+                        <li><strong>Reactive:</strong> "Fix it when it breaks" leads to unplanned downtime, collateral damage, and higher costs.</li>
+                        <li><strong>Time-Based:</strong> Maintenance on a fixed schedule can lead to unnecessary work, missed issues, or premature parts replacement.</li>
+                    </ul>
+                </div>
+                <div class="comparison-card">
+                    <h3>Predictive Maintenance</h3>
+                    <ul>
+                        <li><strong>Data-Driven:</strong> Uses sensors and data analysis to continuously monitor equipment health.</li>
+                        <li><strong>Proactive:</strong> Predicts potential failures before they impact operations.</li>
+                        <li><strong>Optimized:</strong> Performs targeted maintenance exactly when needed, not too early or too late.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="#contact" class="cta-button">Learn How We Can Help</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="areas">
+        <div class="container">
+            <h2>Potential Areas for Exploration</h2>
+            <div class="areas-grid">
+                <div class="area-card">
+                    <h3>Baggage Handling Systems</h3>
+                    <p>Motors, belts, sorters – predicting jams and failures to ensure smooth passenger experience.</p>
+                </div>
+                <div class="area-card">
+                    <h3>HVAC Systems</h3>
+                    <p>Chillers, fans, pumps – ensuring passenger comfort and energy efficiency throughout the terminal.</p>
+                </div>
+                <div class="area-card">
+                    <h3>Passenger Boarding Bridges</h3>
+                    <p>Hydraulics, motors, sensors – ensuring availability and reliability for aircraft boarding.</p>
+                </div>
+                <div class="area-card">
+                    <h3>Elevators & Escalators</h3>
+                    <p>Motors, bearings – maintaining passenger flow and preventing bottlenecks in terminal buildings.</p>
+                </div>
+                <div class="area-card">
+                    <h3>Ground Support Equipment</h3>
+                    <p>Monitoring fleet health to ensure readiness and availability when needed.</p>
+                </div>
+                <div class="area-card">
+                    <h3>Power Systems</h3>
+                    <p>Backup generators, distribution panels – ensuring reliable power for critical airport operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="benefits">
+        <div class="container">
+            <h2>Key Potential Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h3>Reduced Downtime</h3>
+                    <p>Fewer unexpected breakdowns of critical systems keep your operations running smoothly.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Lower Maintenance Costs</h3>
+                    <p>Optimize schedules, reduce emergency repairs, and manage spares better for significant cost savings.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Enhanced Safety & Compliance</h3>
+                    <p>Proactively address potential safety hazards before they become regulatory issues.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Improved Passenger Experience</h3>
+                    <p>More reliable baggage systems, elevators, and climate control lead to happier travelers.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Extended Asset Lifespan</h3>
+                    <p>Maximize the value of your investments by maintaining them based on actual condition.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Data-Driven Decisions</h3>
+                    <p>Gain deeper insights into asset performance to inform future infrastructure investments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="advantage">
+        <div class="container">
+            <h2>The gSmartAirport Advantage: Bespoke Solutions</h2>
+            <div class="advantage-content">
+                <ul>
+                    <li><strong>Not One-Size-Fits-All:</strong> We understand the unique operational realities of airports around the world.</li>
+                    <li><strong>Tailored Approach:</strong> We work with you to identify the highest-impact areas and design solutions that fit your specific assets, existing systems, and budget.</li>
+                    <li><strong>Focus on Partnership:</strong> We aim to understand your challenges deeply before proposing solutions.</li>
+                    <li><strong>Expertise:</strong> Leverage our knowledge of sensors, data analytics, and AI/ML specifically for maintenance applications.</li>
+                    <li><strong>Phased Implementation:</strong> We can start small, focusing on a pilot project to demonstrate value.</li>
+                </ul>
+                <div style="text-align: center;">
+                    <a href="#contact" class="cta-button">Start Your Journey Today</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Let's Start the Conversation</h2>
+            <div class="form-container">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="cta-button">Schedule a Discovery Call</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">gSmartAirport</div>
+                <p>Expert Predictive Maintenance for Airports</p>
+                <div class="social-links">
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">Email</a>
+                </div>
+                <p>&copy; 2025 gSmartAirport. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
