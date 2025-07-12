@@ -1497,8 +1497,11 @@
                                 <br><small>Confidence: 88% | Recommended Action: Schedule motor inspection and bearing check.</small>
                             </div>
 
-                            <div class="chart-placeholder">
+                            <!-- <div class="chart-placeholder">
                                 Vibration & Temperature Trend Chart (Last 30 Days)
+                            </div> -->
+                            <div class="chart-container">
+                                <canvas id="conveyorChart"></canvas>
                             </div>
                         </div>
 
@@ -1559,8 +1562,11 @@
                                  <br><small>Confidence: 94% | Estimated cost if failure occurs: $85,000</small>
                              </div>
 
-                             <div class="chart-placeholder">
+                             <!-- <div class="chart-placeholder">
                                  Temperature & Pressure Trend Chart (Last 7 Days)
+                             </div> -->
+                             <div class="chart-container">
+                                <canvas id="hvacChart"></canvas>
                              </div>
                         </div>
 
@@ -1612,8 +1618,11 @@
                                 <br><small>Confidence: 99% | Next scheduled maintenance in 60 days.</small>
                             </div>
 
-                            <div class="chart-placeholder">
+                            <!-- <div class="chart-placeholder">
                                 Hydraulic Pressure Fluctuation Chart (Last 30 Days)
+                            </div> -->
+                            <div class="chart-container">
+                                <canvas id="jetbridgeChart"></canvas>
                             </div>
                         </div>
                         
@@ -1642,9 +1651,12 @@
                                  <strong>⚠️ Warning:</strong> Voltage regulator shows minor fluctuations. Potential for unstable power delivery.
                                  <br><small>Confidence: 85% | Recommended Action: Schedule electrical systems check.</small>
                              </div>
-                             <div class="chart-placeholder">
+                             <!-- <div class="chart-placeholder">
                                  Voltage Output Trend Chart (Last 7 Days)
-                             </div>
+                             </div> -->
+                             <div class="chart-container">
+                                <canvas id="gpuChart"></canvas>
+                            </div>
                         </div>
                         
                         <div id="acu-card" class="asset-detail">
@@ -1672,8 +1684,11 @@
                                  <strong>✅ System Normal:</strong> Cooling efficiency and power draw are nominal.
                                  <br><small>Confidence: 98% | Next scheduled maintenance in 43 days.</small>
                              </div>
-                             <div class="chart-placeholder">
+                             <!-- <div class="chart-placeholder">
                                  Cooling Efficiency Chart (Last 30 Days)
+                             </div> -->
+                             <div class="chart-container">
+                                <canvas id="acuChart"></canvas>
                              </div>
                         </div>
 
@@ -1908,6 +1923,381 @@
             }
         });
 
+        // Conveyor Belt Chart
+        const conveyorCtx = document.getElementById('conveyorChart').getContext('2d');
+        const conveyorChart = new Chart(conveyorCtx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                datasets: [{
+                    label: 'Vibration (mm/s)',
+                    data: [5.2, 5.8, 6.1, 6.8, 7.2, 7.8, 8.2],
+                    backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                    borderColor: 'rgba(237, 137, 54, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(237, 137, 54, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Motor Temperature (°C)',
+                    data: [68, 69, 70, 71, 72, 74, 75],
+                    backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                    borderColor: 'rgba(229, 62, 62, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(229, 62, 62, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Vibration (mm/s)'
+                        },
+                        min: 0,
+                        max: 10
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        },
+                        min: 65,
+                        max: 80,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Vibration & Temperature Trend (Last 30 Days)'
+                    }
+                }
+            }
+        });
+
+        // HVAC Chart
+        const hvacCtx = document.getElementById('hvacChart').getContext('2d');
+        const hvacChart = new Chart(hvacCtx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                datasets: [{
+                    label: 'Supply Air Temp (°C)',
+                    data: [22, 24, 25, 26, 27, 27.5, 28],
+                    backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                    borderColor: 'rgba(229, 62, 62, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(229, 62, 62, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Filter Pressure (Pa)',
+                    data: [350, 375, 390, 410, 425, 440, 450],
+                    backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                    borderColor: 'rgba(237, 137, 54, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(237, 137, 54, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        },
+                        min: 18,
+                        max: 32
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Pressure (Pa)'
+                        },
+                        min: 300,
+                        max: 500,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Temperature & Pressure Trend (Last 7 Days)'
+                    }
+                }
+            }
+        });
+
+        // Jet Bridge Chart
+        const jetbridgeCtx = document.getElementById('jetbridgeChart').getContext('2d');
+        const jetbridgeChart = new Chart(jetbridgeCtx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                datasets: [{
+                    label: 'Hydraulic Pressure (PSI)',
+                    data: [2480, 2485, 2490, 2495, 2498, 2500, 2500],
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    borderColor: 'rgba(72, 187, 120, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(72, 187, 120, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Motor Current (A)',
+                    data: [14.2, 14.5, 14.8, 15.0, 15.1, 15.0, 15.0],
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Pressure (PSI)'
+                        },
+                        min: 2400,
+                        max: 2600
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Current (A)'
+                        },
+                        min: 10,
+                        max: 20,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Hydraulic Pressure Fluctuation (Last 30 Days)'
+                    }
+                }
+            }
+        });
+
+        // GPU Chart
+        const gpuCtx = document.getElementById('gpuChart').getContext('2d');
+        const gpuChart = new Chart(gpuCtx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                datasets: [{
+                    label: 'Voltage Output (V)',
+                    data: [118, 119, 117, 121, 116, 120, 118],
+                    backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                    borderColor: 'rgba(237, 137, 54, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(237, 137, 54, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Frequency (Hz)',
+                    data: [399, 400, 398, 401, 397, 400, 399],
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Voltage (V)'
+                        },
+                        min: 110,
+                        max: 125
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Frequency (Hz)'
+                        },
+                        min: 395,
+                        max: 405,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Voltage Output Trend (Last 7 Days)'
+                    }
+                }
+            }
+        });
+
+        // ACU Chart
+        const acuCtx = document.getElementById('acuChart').getContext('2d');
+        const acuChart = new Chart(acuCtx, {
+            type: 'line',
+            data: {
+                labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+                datasets: [{
+                    label: 'Cooling Efficiency (%)',
+                    data: [88, 89, 88.5, 89.2, 89.8, 90.1, 89.5],
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    borderColor: 'rgba(72, 187, 120, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(72, 187, 120, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Power Consumption (kW)',
+                    data: [12.5, 12.8, 12.3, 12.6, 12.9, 13.1, 12.7],
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Efficiency (%)'
+                        },
+                        min: 85,
+                        max: 95
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Power (kW)'
+                        },
+                        min: 10,
+                        max: 15,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Cooling Efficiency Chart (Last 30 Days)'
+                    }
+                }
+            }
+        });
+
         function showTab(tabId) {
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => {
@@ -2057,6 +2447,17 @@
                 })
             }
         });
+    
+        // Resize charts on window resize
+        window.addEventListener('resize', function() {
+            monthlyROIChart.resize();
+            conveyorChart.resize();
+            hvacChart.resize();
+            jetbridgeChart.resize();
+            gpuChart.resize();
+            acuChart.resize();
+        });
+
     </script>
 </body>
 </html>
