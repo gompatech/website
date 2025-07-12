@@ -1393,6 +1393,9 @@
                                 </div>
                                 <div style="background: #48bb78; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">COMPLETED</div>
                             </div>
+                            <div class="chart-container">
+                                <canvas id="monthlyROIChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1710,6 +1713,76 @@
     </footer>
 
     <script>
+
+        // Chart.js default configuration
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+        Chart.defaults.plugins.legend.position = 'top';
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+        // Monthly ROI Chart
+        const monthlyROICtx = document.getElementById('monthlyROIChart').getContext('2d');
+        const monthlyROIChart = new Chart(monthlyROICtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'ROI %',
+                    data: [280, 295, 310, 325, 335, 340],
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }, {
+                    label: 'Cost Savings ($K)',
+                    data: [45, 52, 61, 68, 73, 78],
+                    backgroundColor: 'rgba(72, 187, 120, 0.8)',
+                    borderColor: 'rgba(72, 187, 120, 1)',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'ROI Percentage'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Cost Savings ($K)'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Monthly ROI & Cost Savings Trend'
+                    }
+                }
+            }
+        });
+
         // Performance Trends Chart
         const ctx = document.getElementById('performanceChart').getContext('2d');
         const performanceChart = new Chart(ctx, {
