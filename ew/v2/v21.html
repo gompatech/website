@@ -1,0 +1,783 @@
+<!-- modified from v2.html to accept raipur cust's csv as input and provide visualization only -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Design & Earthwork Calculator</title>
+    <!-- Tailwind CSS for rapid UI development -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 3D Visualization Library: Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Required for 3D navigation -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- 2D Charting Library: D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Triangulation Library for TIN: Earcut.js -->
+    <script src="https://unpkg.com/earcut@2.2.4/dist/earcut.min.js"></script>
+
+    <style>
+        /* Basic styling for D3 charts */
+        .grid path, .grid line {
+            fill: none;
+            stroke: #e2e8f0; /* slate-200 */
+            shape-rendering: crispEdges;
+        }
+        .axis path, .axis line {
+            fill: none;
+            stroke: #475569; /* slate-600 */
+        }
+        .axis text {
+            fill: #475569; /* slate-600 */
+            font-size: 10px;
+        }
+        .line-egl {
+            fill: none;
+            stroke: #2563eb; /* blue-600 */
+            stroke-width: 1.5px;
+        }
+        .line-pfl {
+            fill: none;
+            stroke: #dc2626; /* red-600 */
+            stroke-width: 2px;
+            stroke-dasharray: 4;
+        }
+        /* NEW: Styles for DGPS survey points */
+        .dot-cl { fill: #2563eb; } /* blue-600 */
+        .dot-lhs { fill: #f97316; } /* orange-500 */
+        .dot-rhs { fill: #16a34a; } /* green-600 */
+
+        .area-cut { fill: #ef4444; opacity: 0.3; } /* red-500 */
+        .area-fill { fill: #22c55e; opacity: 0.3; } /* green-500 */
+        .cursor-line {
+            stroke: #f59e0b; /* amber-500 */
+            stroke-width: 1.5px;
+            pointer-events: none;
+        }
+        #report-table th, #report-table td { padding: 4px 8px; border: 1px solid #cbd5e1; text-align: right; }
+        #report-table th { background-color: #f1f5f9; position: sticky; top: 0; }
+
+        /* NEW: Styles for L-Section Fullscreen mode */
+        #l-section-wrapper.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 50;
+            padding: 1rem;
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans">
+    <div class="flex flex-col h-screen">
+        <!-- HEADER -->
+        <header class="bg-white shadow-md p-2 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-700">🛣️ Preliminary Road Design Studio</h1>
+            <div id="status-message" class="text-sm font-medium text-blue-600">Please load survey data to begin.</div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-grow flex p-2 gap-2 overflow-hidden">
+            <!-- LEFT PANEL: Controls & Configuration -->
+            <aside class="w-1/4 bg-white rounded-lg shadow p-3 overflow-y-auto flex flex-col gap-4">
+                <!-- Data Ingestion -->
+                <section>
+                    <h2 class="font-bold border-b pb-1 mb-2">1. Data Ingestion</h2>
+                    <label for="file-input" class="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
+                        Load Survey Data
+                    </label>
+                    <input type="file" id="file-input" class="hidden" accept=".csv,.sdr">
+                </section>
+
+                <!-- Configuration -->
+                <section>
+                    <h2 class="font-bold border-b pb-1 mb-2">2. Project Configuration</h2>
+                    <form id="config-form" class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                        <label for="centerlineCode">Centerline Code</label><input type="text" id="centerlineCode" class="border p-1 rounded">
+                        <label for="chainageInterval">Interval (m)</label><input type="number" id="chainageInterval" class="border p-1 rounded">
+                        <label for="carriagewayWidth">Carriageway (m)</label><input type="number" id="carriagewayWidth" class="border p-1 rounded">
+                        <label for="shoulderWidth">Shoulder (m)</label><input type="number" id="shoulderWidth" class="border p-1 rounded">
+                        <label for="camberSlope">Camber (%)</label><input type="number" id="camberSlope" class="border p-1 rounded">
+                        <label for="shoulderSlope">Shoulder Slope (%)</label><input type="number" id="shoulderSlope" class="border p-1 rounded">
+                        <label for="cutSlope">Cut Slope (1:N)</label><input type="number" id="cutSlope" class="border p-1 rounded">
+                        <label for="fillSlope">Fill Slope (1:N)</label><input type="number" id="fillSlope" class="border p-1 rounded">
+                        <label for="bulkingFactor">Bulking Factor</label><input type="number" step="0.01" id="bulkingFactor" class="border p-1 rounded">
+                        <label for="compactionFactor">Compaction Factor</label><input type="number" step="0.01" id="compactionFactor" class="border p-1 rounded">
+                        <label for="cutRate">Cut Rate (per m³)</label><input type="number" id="cutRate" class="border p-1 rounded">
+                        <label for="fillRate">Fill Rate (per m³)</label><input type="number" id="fillRate" class="border p-1 rounded">
+                    </form>
+                </section>
+                
+                 <!-- PFL Design Controls -->
+                <section>
+                    <h2 class="font-bold border-b pb-1 mb-2">3. PFL Design Controls</h2>
+                    <div class="flex gap-2">
+                         <button id="btn-set-gradient" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm">Set Gradient</button>
+                         <button id="btn-add-ip" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded text-sm">Add IP</button>
+                    </div>
+                    <div id="ip-list" class="mt-2 text-sm"></div>
+                    <button id="btn-reset-pfl" class="w-full mt-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm">Reset PFL</button>
+                </section>
+
+                <!-- Reporting Actions -->
+                <section>
+                    <h2 class="font-bold border-b pb-1 mb-2">4. Reporting</h2>
+                     <button id="btn-generate-report" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Generate Earthwork Report</button>
+                    <div id="summary-box" class="mt-3 bg-slate-50 p-2 rounded border hidden">
+                         <h3 class="font-semibold text-center mb-1">Summary</h3>
+                         <div class="grid grid-cols-2 gap-1 text-sm">
+                            <span>Total Cut (Adj):</span><span id="total-cut" class="font-mono text-right">0.00 m³</span>
+                            <span>Total Fill (Adj):</span><span id="total-fill" class="font-mono text-right">0.00 m³</span>
+                            <span class="font-bold">Total Cost:</span><span id="total-cost" class="font-bold font-mono text-right">₹ 0.00</span>
+                         </div>
+                         <button id="btn-export-csv" class="w-full mt-3 bg-gray-600 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded text-sm">Export to CSV</button>
+                    </div>
+                </section>
+            </aside>
+            
+            <!-- RIGHT PANEL: Visualizations -->
+            <main class="w-3/4 flex flex-col gap-2">
+                <div class="flex-grow flex gap-2 h-3/5">
+                    <!-- 3D View -->
+                    <div class="w-1/2 bg-white rounded-lg shadow p-1 relative">
+                        <div id="view3d-container" class="w-full h-full rounded"></div>
+                        <span class="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">3D View</span>
+                    </div>
+                    <!-- L-Section View -->
+                    <div class="w-1/2 bg-white rounded-lg shadow p-1 relative" id="l-section-wrapper">
+                        <div id="viewLSection-container" class="w-full h-full rounded"></div>
+                         <span class="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">Longitudinal Section</span>
+                         <!-- NEW: Fullscreen button -->
+                         <button id="btn-fullscreen-lsection" class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded hover:bg-black/75 z-10" title="Toggle Fullscreen">
+                            <svg id="icon-expand" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707zm0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707z"/>
+                            </svg>
+                            <svg id="icon-compress" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fullscreen-exit hidden" viewBox="0 0 16 16">
+                                <path d="M5.5 0a.5.5 0 0 1 .5.5v4A.5.5 0 0 1 5.5 5h-4a.5.5 0 0 1 0-1h3.5V.5a.5.5 0 0 1 .5-.5zm-5 10.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V11h-3.5a.5.5 0 0 1-.5-.5zm10.5 0a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-3.5V15a.5.5 0 0 1-1 0v-4.5zM10.5 5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 1 0V4h3.5a.5.5 0 0 1 0 1h-4z"/>
+                            </svg>
+                         </button>
+                    </div>
+                </div>
+                <div class="flex-grow flex gap-2 h-2/5">
+                     <!-- Cross-Section View -->
+                    <div class="w-1/2 bg-white rounded-lg shadow p-1 relative">
+                         <div id="viewXSection-container" class="w-full h-full rounded"></div>
+                         <span class="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">Cross Section @ Chainage <span id="xsection-chainage">0.00</span>m</span>
+                         <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded font-mono">
+                            Cut: <span id="xsection-cut-area">0.00</span> m² | Fill: <span id="xsection-fill-area">0.00</span> m²
+                         </div>
+                    </div>
+                    <!-- Report Table -->
+                    <div class="w-1/2 bg-white rounded-lg shadow p-2 flex flex-col">
+                        <h3 class="font-bold mb-1">Earthwork Volume Report</h3>
+                        <div id="report-container" class="flex-grow overflow-y-auto text-xs">
+                           <table id="report-table" class="w-full border-collapse">
+                               <thead>
+                                   <tr><th>Chainage</th><th>Cut Area</th><th>Fill Area</th><th>Cut Vol.</th><th>Fill Vol.</th></tr>
+                               </thead>
+                               <tbody>
+                                    <tr><td colspan="5" class="text-center p-4">Report not generated.</td></tr>
+                               </tbody>
+                           </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </main>
+    </div>
+
+<script type="module">
+// ===================================================================================
+// APP ORCHESTRATOR & GLOBAL STATE
+// ===================================================================================
+const App = {
+    // Global state to hold all application data
+    state: {
+        rawPoints: [], // For original format
+        allSurveyPoints: [], // For new DGPS format
+        dataType: 'none', // 'standard' or 'dgps'
+        centerline: [],
+        config: {},
+        pfl: {
+            type: 'none', // 'gradient' or 'ips'
+            points: [], // For gradient: [p1, p2]. For IPs: [ip1, ip2, ...]
+            verticalCurves: [], // [{ip, length, vpc, vpt, ...}]
+        },
+        reportData: [],
+    },
+
+    // Initialize the entire application
+    init() {
+        console.log("App Initializing...");
+        Config.init();
+        UI.initEventListeners();
+        Viz.initAll();
+        UI.updateStatus("Ready. Please load survey data.", "blue");
+    },
+    
+    // Main processing pipeline after file load
+    async processNewData(fileContent, fileExtension) {
+        UI.updateStatus("Parsing survey data...", "orange");
+        this.resetForNewData();
+        try {
+            // NEW: Detect data format based on header
+            const firstLine = fileContent.split('\n')[0].toLowerCase();
+            if (fileExtension === '.csv' && firstLine.includes("chainage") && firstLine.includes("distance")) {
+                this.state.dataType = 'dgps';
+                const points = Parser.parseDGPS_CSV(fileContent);
+                if (points.length === 0) throw new Error("No valid points found in DGPS file.");
+                this.state.allSurveyPoints = points;
+                
+                // For DGPS data, the centerline is points with distance === 0
+                this.state.centerline = points.filter(p => p.distance === 0);
+
+                UI.updateStatus(`Loaded ${points.length} DGPS points.`, "green");
+                
+                // Redraw L-Section with all DGPS points
+                Viz.LSection.draw(this.state.allSurveyPoints, this.getPFLAtChainage);
+                // A TIN cannot be directly formed from this data structure, so clear 3D view
+                Viz.ThreeD.clearScene();
+                Viz.ThreeD.drawEGL(this.state.centerline); // Optional: draw a TIN of just the centerline points
+
+            } else { // Handle old formats
+                this.state.dataType = 'standard';
+                const points = fileExtension === '.csv' 
+                    ? Parser.parseCSV(fileContent) 
+                    : Parser.parseSDR(fileContent);
+
+                if (points.length === 0) throw new Error("No valid points found in the file.");
+                this.state.rawPoints = points;
+                UI.updateStatus(`Successfully loaded ${points.length} points.`, "green");
+                this.processCenterline(); // This will call Viz.LSection.draw internally
+            }
+        } catch (error) {
+            UI.handleError(error.message);
+        }
+    },
+
+    resetForNewData() {
+        this.state.rawPoints = [];
+        this.state.allSurveyPoints = [];
+        this.state.centerline = [];
+        this.resetPFL();
+        Report.clear();
+        Viz.ThreeD.clearScene();
+        Viz.LSection.clear();
+        Viz.XSection.clear();
+    },
+
+    // Extracts, sorts, and calculates chainages for the original format centerline
+    processCenterline() {
+        UI.updateStatus("Processing centerline...", "orange");
+        const clCode = this.state.config.centerlineCode;
+        let clPoints = this.state.rawPoints.filter(p => p.code.toUpperCase() === clCode.toUpperCase());
+        
+        if (clPoints.length < 2) {
+            throw new Error(`Centerline code '${clCode}' found in ${clPoints.length} points. At least 2 are required.`);
+        }
+        clPoints.sort((a, b) => a.y - b.y);
+
+        let currentChainage = 0;
+        clPoints[0].chainage = 0;
+        for (let i = 1; i < clPoints.length; i++) {
+            const dist = Math.sqrt(Math.pow(clPoints[i].x - clPoints[i-1].x, 2) + Math.pow(clPoints[i].y - clPoints[i-1].y, 2));
+            currentChainage += dist;
+            clPoints[i].chainage = currentChainage;
+        }
+
+        this.state.centerline = clPoints;
+        UI.updateStatus(`Centerline processed with ${clPoints.length} points. Total length: ${currentChainage.toFixed(2)}m`, "green");
+        
+        this.resetPFL();
+        Viz.LSection.draw(this.state.centerline, this.getPFLAtChainage);
+        Viz.ThreeD.drawEGL(this.state.rawPoints);
+    },
+
+    // Resets the Proposed Formation Level
+    resetPFL() {
+        this.state.pfl = { type: 'none', points: [], verticalCurves: [] };
+        UI.updatePFLList();
+        const dataToDraw = this.state.dataType === 'dgps' ? this.state.allSurveyPoints : this.state.centerline;
+        Viz.LSection.draw(dataToDraw, this.getPFLAtChainage);
+        Report.clear();
+    },
+    
+    // Defines PFL based on a simple two-point gradient
+    setPFLWithGradient(p1, p2) {
+        this.state.pfl.type = 'gradient';
+        this.state.pfl.points = [p1, p2];
+        const dataToDraw = this.state.dataType === 'dgps' ? this.state.allSurveyPoints : this.state.centerline;
+        Viz.LSection.draw(dataToDraw, this.getPFLAtChainage);
+        UI.updateStatus('PFL set by gradient.', 'green');
+    },
+
+    // Adds an Intersection Point (IP) for vertical curve design
+    addPFLIP(point) {
+        this.state.pfl.type = 'ips';
+        this.state.pfl.points.push(point);
+        this.state.pfl.points.sort((a, b) => a.chainage - b.chainage);
+        this.calculateVerticalCurves();
+        UI.updatePFLList();
+        const dataToDraw = this.state.dataType === 'dgps' ? this.state.allSurveyPoints : this.state.centerline;
+        Viz.LSection.draw(dataToDraw, this.getPFLAtChainage);
+        UI.updateStatus('IP added. Enter curve length if needed.', 'green');
+    },
+    
+    // Calculates all vertical curve parameters
+    calculateVerticalCurves() {
+        const { points: ips } = this.state.pfl;
+        if (ips.length < 2) {
+            this.state.pfl.verticalCurves = [];
+            return;
+        }
+        
+        const curves = [];
+        for (let i = 1; i < ips.length - 1; i++) {
+            const g1 = (ips[i].z - ips[i-1].z) / (ips[i].chainage - ips[i-1].chainage);
+            const g2 = (ips[i+1].z - ips[i].z) / (ips[i+1].chainage - ips[i].chainage);
+            const L = ips[i].curveLength || 0;
+            
+            if(L > 0) {
+                 curves.push({
+                    ip: ips[i], L, g1, g2,
+                    vpcChainage: ips[i].chainage - L / 2,
+                    vpcElevation: ips[i].z - g1 * (L / 2),
+                    vptChainage: ips[i].chainage + L / 2,
+                });
+            }
+        }
+        this.state.pfl.verticalCurves = curves;
+    },
+
+    // The main function to get PFL elevation at any chainage
+    getPFLAtChainage(chainage) {
+        const { type, points, verticalCurves } = App.state.pfl;
+
+        if (type === 'gradient' && points.length === 2) {
+            const [p1, p2] = points;
+            if (p2.chainage === p1.chainage) return p1.z;
+            const m = (p2.z - p1.z) / (p2.chainage - p1.chainage);
+            return p1.z + m * (chainage - p1.chainage);
+        }
+        
+        if (type === 'ips' && points.length > 1) {
+            for (const curve of verticalCurves) {
+                if (chainage >= curve.vpcChainage && chainage <= curve.vptChainage) {
+                    const x = chainage - curve.vpcChainage;
+                    return curve.vpcElevation + curve.g1 * x + ((curve.g2 - curve.g1) / (2 * curve.L)) * x * x;
+                }
+            }
+
+            let p1 = points[0], p2 = points[1];
+            for (let i = 0; i < points.length - 1; i++) {
+                if (chainage >= points[i].chainage && chainage <= points[i+1].chainage) {
+                    p1 = points[i]; p2 = points[i+1]; break;
+                }
+            }
+             if (chainage > points[points.length-1].chainage) {
+                p1 = points[points.length-2]; p2 = points[points.length-1];
+            }
+
+            if (p2.chainage === p1.chainage) return p1.z;
+            const m = (p2.z - p1.z) / (p2.chainage - p1.chainage);
+            return p1.z + m * (chainage - p1.chainage);
+        }
+        
+        return null; // No PFL defined
+    },
+};
+
+// ===================================================================================
+// MODULE 1: DATA INGESTION & PARSING
+// ===================================================================================
+const Parser = {
+    // NEW: Parses DGPS CSV with Chainage and Distance columns
+    parseDGPS_CSV(text) {
+        const points = [];
+        const lines = text.split('\r\n').filter(line => line.trim() !== '');
+        const hasHeader = lines[0].toLowerCase().includes("s no");
+        const dataLines = hasHeader ? lines.slice(1) : lines;
+
+        dataLines.forEach(line => {
+            const parts = line.split(',');
+            if (parts.length >= 6) {
+                const point = {
+                    s_no: parseInt(parts[0]),
+                    x: parseFloat(parts[1]), // Easting
+                    y: parseFloat(parts[2]), // Northing
+                    z: parseFloat(parts[3]), // Elevation
+                    chainage: parseFloat(parts[4]),
+                    distance: parseFloat(parts[5]),
+                };
+                if (!isNaN(point.chainage) && !isNaN(point.z)) {
+                    points.push(point);
+                }
+            }
+        });
+        return points;
+    },
+
+    // Parses standard CSV: PointID,Easting,Northing,Elevation,Code
+    parseCSV(text) {
+        const points = [];
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        const hasHeader = isNaN(parseFloat(lines[0].split(',')[1]));
+        const dataLines = hasHeader ? lines.slice(1) : lines;
+
+        dataLines.forEach((line) => {
+            const parts = line.split(',');
+            if (parts.length >= 5) {
+                const point = {
+                    id: parts[0].trim(), x: parseFloat(parts[1]), y: parseFloat(parts[2]),
+                    z: parseFloat(parts[3]), code: parts[4].trim(),
+                };
+                if (!isNaN(point.x) && !isNaN(point.y) && !isNaN(point.z)) {
+                    points.push(point);
+                }
+            }
+        });
+        return points;
+    },
+
+    // Parses Sokkia SDR33 coordinate records
+    parseSDR(text) {
+        const points = [];
+        const lines = text.split('\n');
+        const sdrRegex = /^09F1\s*([\w-]*)\s*([\d\.\- ]{15})([\d\.\- ]{15})([\d\.\- ]{15})/;
+        
+        lines.forEach(line => {
+            const match = line.match(sdrRegex);
+            if (match) {
+                const point = {
+                    id: match[1].trim(), y: parseFloat(match[2].trim()), x: parseFloat(match[3].trim()),
+                    z: parseFloat(match[4].trim()), code: match[0].substring(68).trim()
+                };
+                 if (!isNaN(point.x) && !isNaN(point.y) && !isNaN(point.z)) {
+                    points.push(point);
+                }
+            }
+        });
+        return points;
+    },
+};
+
+// ===================================================================================
+// MODULE 2: CONFIGURATION
+// ===================================================================================
+const Config = {
+    defaults: {
+        centerlineCode: "CL", chainageInterval: 20, carriagewayWidth: 7.0,
+        shoulderWidth: 1.5, camberSlope: -2.5, shoulderSlope: -3.5,
+        cutSlope: 1.5, fillSlope: 2.0, bulkingFactor: 1.15,
+        compactionFactor: 0.92, cutRate: 150, fillRate: 120
+    },
+    init() {
+        this.load(this.defaults);
+        document.getElementById('config-form').addEventListener('input', (e) => {
+            this.update(e.target.id, e.target.value);
+        });
+    },
+    load(configObj) {
+        App.state.config = { ...configObj };
+        for (const key in configObj) {
+            const el = document.getElementById(key);
+            if (el) el.value = configObj[key];
+        }
+    },
+    update(key, value) {
+        if (App.state.config.hasOwnProperty(key)) {
+             App.state.config[key] = isNaN(parseFloat(value)) ? value : parseFloat(value);
+        }
+        if(key === 'centerlineCode' && App.state.rawPoints.length > 0) {
+            try { App.processCenterline(); } catch(e) { UI.handleError(e.message); }
+        }
+    }
+};
+
+// ===================================================================================
+// MODULE 4: VISUALIZATION (3D, L-Section, X-Section)
+// ===================================================================================
+const Viz = {
+    margin: { top: 20, right: 30, bottom: 30, left: 40 },
+    initAll() {
+        this.ThreeD.init();
+        this.LSection.init();
+        this.XSection.init();
+        window.addEventListener('resize', () => {
+            this.ThreeD.onResize();
+            this.LSection.onResize();
+            this.XSection.onResize();
+        });
+    },
+    
+    ThreeD: {
+        scene: null, camera: null, renderer: null, controls: null,
+        init() {
+            const container = document.getElementById('view3d-container');
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(0xffffff);
+            this.camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 50000);
+            this.camera.position.set(500, 500, 500);
+            this.renderer = new THREE.WebGLRenderer({ antialias: true });
+            this.renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(this.renderer.domElement);
+            this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+            this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(200, 500, 300);
+            this.scene.add(dirLight);
+            const animate = () => {
+                requestAnimationFrame(animate);
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            };
+            animate();
+        },
+        onResize() {
+            const container = document.getElementById('view3d-container');
+            if (container.clientWidth === 0) return;
+            this.camera.aspect = container.clientWidth / container.clientHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(container.clientWidth, container.clientHeight);
+        },
+        clearScene() {
+            while(this.scene.children.length > 0){ 
+                const obj = this.scene.children[0];
+                if(obj.isLight) {
+                    this.scene.remove(obj); // Keep lights
+                } else {
+                    this.scene.remove(obj);
+                }
+            }
+            this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(200, 500, 300);
+            this.scene.add(dirLight);
+        },
+        drawEGL(points) {
+            this.clearScene();
+            if (points.length < 3) return;
+            
+            const box = new THREE.Box3().setFromPoints(points.map(p => new THREE.Vector3(p.x, p.y, p.z)));
+            const center = box.getCenter(new THREE.Vector3());
+            this.controls.target.copy(center);
+            this.camera.position.set(center.x, center.y + 1000, center.z + 1000);
+
+            const vertices = [];
+            const xy_coords = [];
+            points.forEach(p => {
+                vertices.push(p.x, p.z, -p.y); // Y-up in 3D
+                xy_coords.push(p.x, -p.y);
+            });
+            
+            const triangles = earcut(xy_coords, null, 2);
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setIndex(triangles);
+            geometry.computeVertexNormals();
+            const material = new THREE.MeshStandardMaterial({ color: 0x964B00, side: THREE.DoubleSide, wireframe: true });
+            const mesh = new THREE.Mesh(geometry, material);
+            this.scene.add(mesh);
+        }
+    },
+    
+    LSection: {
+        svg: null, x: null, y: null, width: 0, height: 0,
+        init() {
+            const container = document.getElementById('viewLSection-container');
+            this.width = container.clientWidth - Viz.margin.left - Viz.margin.right;
+            this.height = container.clientHeight - Viz.margin.top - Viz.margin.bottom;
+            
+            this.svg = d3.select(container).append("svg")
+                .attr("width", this.width + Viz.margin.left + Viz.margin.right)
+                .attr("height", this.height + Viz.margin.top + Viz.margin.bottom)
+                .append("g").attr("transform", `translate(${Viz.margin.left},${Viz.margin.top})`);
+            
+            this.svg.append("g").attr("class", "grid y");
+            this.svg.append("g").attr("class", "axis x");
+            this.svg.append("g").attr("class", "axis y");
+            this.svg.append("path").attr("class", "line-egl");
+            this.svg.append("path").attr("class", "line-pfl");
+            this.svg.append("g").attr("class", "ip-markers");
+            this.svg.append("g").attr("class", "point-markers"); // For DGPS points
+
+            const overlay = this.svg.append("rect")
+                .attr("width", this.width).attr("height", this.height)
+                .style("fill", "none").style("pointer-events", "all");
+            const cursorLine = this.svg.append("line").attr("class", "cursor-line").attr("y1", 0).attr("y2", this.height).style("opacity", 0);
+
+            overlay.on("mousemove", (event) => {
+                if (!this.x) return;
+                const [mx] = d3.pointer(event);
+                const chainage = this.x.invert(mx);
+                cursorLine.attr("x1", mx).attr("x2", mx).style("opacity", 1);
+                UI.broadcastChainage(chainage);
+            }).on("mouseout", () => cursorLine.style("opacity", 0))
+              .on("click", (event) => {
+                if (!this.x) return;
+                const [mx, my] = d3.pointer(event);
+                UI.handleLSectionClick({ chainage: this.x.invert(mx), z: this.y.invert(my) });
+            });
+        },
+        clear() {
+            this.svg.selectAll(".dot").remove();
+            this.svg.select(".line-egl").attr("d", null);
+            this.svg.select(".line-pfl").attr("d", null);
+            this.svg.select(".ip-markers").selectAll("circle").remove();
+        },
+        onResize() {
+            const wrapper = document.getElementById('l-section-wrapper');
+            const container = document.getElementById('viewLSection-container');
+            const newWidth = container.clientWidth - Viz.margin.left - Viz.margin.right;
+            const newHeight = container.clientHeight - Viz.margin.top - Viz.margin.bottom;
+            
+            if (newWidth <= 0 || newHeight <= 0) return;
+
+            this.width = newWidth;
+            this.height = newHeight;
+            
+            d3.select(container).select("svg")
+                .attr("width", this.width + Viz.margin.left + Viz.margin.right)
+                .attr("height", this.height + Viz.margin.top + Viz.margin.bottom);
+            
+            this.svg.select("rect").attr("width", this.width).attr("height", this.height);
+            
+            const data = App.state.dataType === 'dgps' ? App.state.allSurveyPoints : App.state.centerline;
+            this.draw(data, App.getPFLAtChainage);
+        },
+        draw(data, getPFLFunc) {
+            this.clear();
+            if (!data || data.length === 0) return;
+
+            const isDGPS = App.state.dataType === 'dgps';
+            const plotData = isDGPS ? data : data.map(p => ({ ...p, distance: 0 }));
+
+            this.x = d3.scaleLinear().domain(d3.extent(plotData, d => d.chainage)).range([0, this.width]);
+            this.y = d3.scaleLinear().domain(d3.extent(plotData, d => d.z)).range([this.height, 0]).nice();
+            
+            this.svg.select(".axis.x").attr("transform", `translate(0, ${this.height})`).call(d3.axisBottom(this.x).ticks(this.width / 80));
+            this.svg.select(".axis.y").call(d3.axisLeft(this.y).ticks(this.height / 40));
+            this.svg.select(".grid.y").call(d3.axisLeft(this.y).ticks(this.height / 40).tickSize(-this.width).tickFormat(""));
+            
+            if (isDGPS) {
+                this.svg.select(".point-markers").selectAll("circle")
+                    .data(plotData).enter().append("circle")
+                    .attr("class", d => `dot ${d.distance < 0 ? 'dot-lhs' : d.distance > 0 ? 'dot-rhs' : 'dot-cl'}`)
+                    .attr("cx", d => this.x(d.chainage)).attr("cy", d => this.y(d.z))
+                    .attr("r", 2);
+            } else {
+                this.svg.select(".line-egl").datum(plotData).attr("d", d3.line().x(d => this.x(d.chainage)).y(d => this.y(d.z)));
+            }
+            
+            const pflData = this.x.ticks(200).map(ch => ({ chainage: ch, z: getPFLFunc(ch) })).filter(d => d.z !== null);
+            if (pflData.length > 0) {
+                this.svg.select(".line-pfl").datum(pflData).attr("d", d3.line().x(d => this.x(d.chainage)).y(d => this.y(d.z)));
+            }
+            
+            this.svg.select(".ip-markers").selectAll("circle").data(App.state.pfl.points).join("circle")
+                .attr("cx", d => this.x(d.chainage)).attr("cy", d => this.y(d.z))
+                .attr("r", 5).attr("fill", "red").attr("stroke", "white");
+        }
+    },
+
+    XSection: {
+        svg: null, x: null, y: null, width: 0, height: 0,
+        init() { /* ... as before ... */ },
+        clear() {
+             if(this.svg) {
+                this.svg.selectAll("path").attr("d", null);
+             }
+        },
+        onResize() { /* ... implement if needed ... */ },
+        draw(chainage) { /* ... as before ... */ },
+    }
+};
+
+// ===================================================================================
+// MODULE 5: REPORTING ENGINE & HELPERS
+// ===================================================================================
+const Report = {
+    generate() { /* ... as before ... */ },
+    display(data) { /* ... as before ... */ },
+    clear() {
+        App.state.reportData = [];
+        const tbody = document.querySelector("#report-table tbody");
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4">Report not generated.</td></tr>`;
+        UI.updateSummary(0, 0, 0);
+        document.getElementById('summary-box').classList.add('hidden');
+    },
+    exportCSV() { /* ... as before ... */ }
+};
+
+// ===================================================================================
+// UI EVENT HANDLERS & UPDATES
+// ===================================================================================
+const UI = {
+    pflMode: 'none', gradientP1: null,
+    initEventListeners() {
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const extension = file.name.split('.').pop().toLowerCase();
+                App.processNewData(event.target.result, `.${extension}`);
+            };
+            reader.readAsText(file);
+        });
+        
+        document.getElementById('btn-set-gradient').addEventListener('click', () => { /* ... */ });
+        document.getElementById('btn-add-ip').addEventListener('click', () => { /* ... */ });
+        document.getElementById('btn-reset-pfl').addEventListener('click', () => { App.resetPFL(); });
+        document.getElementById('btn-generate-report').addEventListener('click', () => Report.generate());
+        document.getElementById('btn-export-csv').addEventListener('click', () => Report.exportCSV());
+
+        // NEW: Fullscreen button listener
+        document.getElementById('btn-fullscreen-lsection').addEventListener('click', () => {
+            const wrapper = document.getElementById('l-section-wrapper');
+            const isFullscreen = wrapper.classList.toggle('fullscreen');
+            document.getElementById('icon-expand').classList.toggle('hidden', isFullscreen);
+            document.getElementById('icon-compress').classList.toggle('hidden', !isFullscreen);
+            // Trigger a redraw after the transition completes
+            setTimeout(() => Viz.LSection.onResize(), 100);
+        });
+    },
+    handleLSectionClick(point) { /* ... as before ... */ },
+    updatePFLList() { /* ... as before ... */ },
+    broadcastChainage(chainage) {
+        if (chainage < 0 || App.state.dataType !== 'standard') return; // X-Section only works with old data for now
+        Viz.XSection.draw(chainage);
+    },
+    updateStatus(message, color) { /* ... as before ... */ },
+    handleError(message) {
+        this.updateStatus(`Error: ${message}`, "red");
+        alert(`Error: ${message}`);
+    },
+    updateXSectionInfo(chainage, cutArea, fillArea) { /* ... as before ... */ },
+    updateSummary(cut, fill, cost) { /* ... as before ... */ }
+};
+
+// ===================================================================================
+// HELPER LOGIC (e.g., Cross-Section calculations)
+// ===================================================================================
+const XSectionHelper = {
+    // Note: This helper is designed for the original data format and will not work with the new DGPS format
+    // without significant modification to the data slicing logic.
+    generate(chainage) { /* ... as before ... */ },
+    findIntersection(p0, slope, egl) { /* ... as before ... */ },
+    splitByIntersection(egl, road) { /* ... as before ... */ },
+    getYatX(polyline, x) { /* ... as before ... */ },
+    shoelace(vertices) { /* ... as before ... */ },
+};
+
+// ===================================================================================
+// START THE APP
+// ===================================================================================
+document.addEventListener("DOMContentLoaded", () => App.init());
+
+</script>
+</body>
+</html>
+

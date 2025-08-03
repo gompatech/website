@@ -1,0 +1,28 @@
+
+  "formation_width_m": 10.0,
+  "side_slope_cut_ratio_hv": "1.5:1",
+  "side_slope_fill_ratio_hv": "2:1",
+  "station_interval_m": 20,
+  "unit_cost_fill_per_m3": 450.0,
+  "material_definitions": [
+    {
+      "type": "Soil",
+      "start_chainage": 0,
+      "end_chainage": 400,
+      "unit_cost_cut_per_m3": 350.0
+    },
+    {
+      "type": "Rock",
+      "start_chainage": 400,
+      "end_chainage": 1000,
+      "unit_cost_cut_per_m3": 800.0
+    }
+  ],
+  "special_sections": [
+    {
+      "type": "bridge",
+      "start_chainage": 240,
+      "end_chainage": 360
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+
+NOTE : THIS IS BASED ON DEMO DATA, ALL THE INPUT COORDINATES AND DEFAULT(Cost etc.) ARE ASSUMED 
+
+Step 1: Loading data and configuration...
+Step 2: Calculating volumes at 20m intervals...
+  - Chainage 240m: In special section (bridge/tunnel). Skipping.
+  - Chainage 260m: In special section (bridge/tunnel). Skipping.
+  - Chainage 280m: In special section (bridge/tunnel). Skipping.
+  - Chainage 300m: In special section (bridge/tunnel). Skipping.
+  - Chainage 320m: In special section (bridge/tunnel). Skipping.
+  - Chainage 340m: In special section (bridge/tunnel). Skipping.
+
+--- Earthworks Calculation Summary ---
+Total Cut Volume: 11,460.08 m³
+Total Fill Volume: 7,483.65 m³
+
+--- Preliminary Cost Estimation (INR) ---
+  - Cut Cost (Soil): 1,916,794.68 (for 5,476.56 m³)
+  - Cut Cost (Rock): 4,786,816.45 (for 5,983.52 m³)
+  - Fill Cost (All): 3,367,641.53 (for 7,483.65 m³)
+-----------------------------------------
+Total Estimated Earthworks Cost: ₹ 10,071,252.65
+-----------------------------------------
+
+Step 3: Generating 3D visualization...
+
+Success! Visualization saved to 'earthworks_visualization.html'
