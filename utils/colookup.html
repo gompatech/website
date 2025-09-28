@@ -1,0 +1,593 @@
+<!-- Utility to look up existing co-names
+2025-09-28  sds init_creation_IgnoreCase_Co-lookup_keyword_search_finds_related_cos -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            min-width: 120px;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .results.found {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            color: #166534;
+        }
+        
+        .results.not-found {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+        }
+        
+        .results.hidden {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        .company-list {
+            text-align: left;
+            line-height: 1.6;
+        }
+        
+        .company-item {
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .info {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Company Search</h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Enter company name or keyword..." maxlength="100">
+        </div>
+        <button class="search-btn" onclick="searchCompany()">Search</button>
+        <div class="results hidden" id="results"></div>
+        <div class="info">Search is case-insensitive and matches partial names</div>
+    </div>
+
+    <script>
+        // Company database - Replace this array with your company names
+        // const companies = [
+        //     "BWX Technologies, Inc.",
+        //     "Apple Inc.",
+        //     "Microsoft Corporation",
+        //     "Google LLC",
+        //     "Amazon.com, Inc.",
+        //     "Meta Platforms, Inc.",
+        //     "Tesla, Inc.",
+        //     // Add your 400 company names here
+        // ];
+
+        const companies = [
+            "TV Minority Company",
+            "EMC",
+            "CX2",
+            "LandX Motors",
+            "Ayro Inc",
+            "Drake Manufacturing",
+            "ARX Robotics",
+            "Matre Maskin",
+            "Grand Traverse Plastics",
+            "General Extrusions,",
+            "Novitech",
+            "IKM Ocean Design AS",
+            "System Seals Inc.",
+            "Phoenix EV",
+            "Lordstown Motor",
+            "Lista Office LO",
+            "Vantedge Medical",
+            "Penso",
+            "Mullen Automotive",
+            "Uhde High Pressure Technologies",
+            "Parametric Solutions, Inc.",
+            "Field Aerospace",
+            "Atalys",
+            "American Mitsuba",
+            "Tecnocad",
+            "LiveWire",
+            "ENTEGRA",
+            "Workhorse Group Inc.",
+            "Centrax Gas Turbines",
+            "ETE REMAN",
+            "Freightliner Custom Chassis Corporation",
+            "Destinus",
+            "PCX Aerosystems",
+            "One Next Energy (ONE) ",
+            "Yanfeng USA Automotive Trim Systems Inc.",
+            "Ebusco",
+            "Kopter Group AG",
+            "Dynamic Manufacturing Co.",
+            "Yapp Motors",
+            "Pacific Manufacturing Ohio",
+            "ARRIVAL",
+            "Gotion",
+            "Freudenberg e-Power Systems",
+            "Faber S.P.A.",
+            "WinGD Ltd.",
+            "Arrival",
+            "ZeroAvia",
+            "MB Aerospace",
+            "Stats Group",
+            "Vertical Aerospace",
+            "OrthoPediatrics",
+            "ask for whom to approach regarding PLM needs / opportunities, Ramesh Modem (Engg. Data Manager), Andrew QuickI(Director of Engineering)",
+            "Helsing",
+            "ULSTEIN",
+            "Faraday Future",
+            "Remy International",
+            "Davis-Standard",
+            "GRIMME",
+            "Meridian Lightweight Technologies Inc.",
+            "Proterra",
+            "Grote Industries",
+            "Horiba Mira",
+            "Punch Powertrain",
+            "Unison",
+            "ATC",
+            "Valtra Inc",
+            "ADAC Plastics DBA ADAC Automotive",
+            "AMAC Aerospace Switzerland AG",
+            "Stant",
+            "Key Safety Systems",
+            "Siempelkamp.",
+            "Hyundai America Technical Center, Inc. (HATCI)",
+            "EMD (Electro-Motive Diesel)",
+            "FOMAS Group",
+            "Motus Integrated Technologies",
+            "Firefly Aerospace",
+            "Pursuit Aerospace",
+            "Lindsay Corporation",
+            "Zeekr Technology Europe",
+            "NDT Global",
+            "Paragon Medical",
+            "Saab, Inc",
+            "Aurora Flight Sciences",
+            "polytec group",
+            "Auria",
+            "Freudenberg Medical",
+            "Greaves Electric Mobility",
+            "Weidmüller.",
+            "Kasai North America, Inc",
+            "AM General",
+            "Harman/Becker Automotive Systems",
+            "MEC (Mayville Engineering Company, Inc.)",
+            "Cebi Group",
+            "Sioux Technologies",
+            "Solaris Bus & Coach",
+            "Carraro Group",
+            "FRAENKISCHE",
+            "United Grinding Group",
+            "Textron Specialized",
+            "Cobham",
+            "ConMet Consolidated Metro",
+            "Seaway 7",
+            "De Havilland Aircraft of Canada Limited.",
+            "Koenig & Bauer",
+            "Sargento Foods Inc.",
+            "Schmitz Cargobull AG",
+            "Italdesign",
+            "Shiloh Industries (Dura Shiloh)",
+            "Ceer",
+            "Italdesign",
+            "Barnes Aerospace",
+            "Cirrus Aircraft",
+            "Oshkosh Defense",
+            "AUTOKINTON ( Acquired L&W)",
+            "JBT Marel",
+            "Henniges Automotive",
+            "Alion Science and Technology",
+            "Shape Corp.",
+            "Rocket Lab",
+            "Stellantis",
+            "Visteon",
+            "Veoneer",
+            "Roush",
+            "Elbit Systems",
+            "Novanta Inc",
+            "Huf Group",
+            "Ducati Motor",
+            "Maserati",
+            "Viant Medical",
+            "Snop Automotive",
+            "TI Fluid Systems",
+            "ABC Technologies",
+            "McLaren Automotive Ltd",
+            "Allison Transmission ",
+            "Avio Aero",
+            "FICOSA",
+            "KION Group",
+            "Phina",
+            "Inteva Products",
+            "Briggs & Stratton",
+            "Takata",
+            "Kratos Defense and Security Solutions",
+            "MDA Space",
+            "Generac",
+            "Jet Aviation",
+            "Trelleborg Sealing Solutions",
+            "Anduril",
+            "Meritor",
+            "Autoneum",
+            "Daikin Comfort",
+            "BEUMER Group.",
+            "Akkodis",
+            "Panduit",
+            "UTC Aerospace Systems",
+            "MTU Aero Engines",
+            "Moura",
+            "Nidec Motor Corporation",
+            "Dart Container",
+            "Ametek",
+            "Clarios",
+            "Eberspächer Group",
+            "Freudenberg Sealing Technologies.",
+            "KOSTAL Group",
+            "Meggitt Parker Meggitt",
+            "Curtiss Writght",
+            "Woodward, Inc.",
+            "Yazaki",
+            "Danfoss",
+            "Viasat",
+            "Howmet Aerospace",
+            "Snap-On Tools",
+            "Geely",
+            "Bose Corporation",
+            "Uno Minda Ltd.",
+            "Joyson Safety Systems",
+            "International Automotive Components (IAC)",
+            "Novelis",
+            "HNTB",
+            "Donaldson",
+            "HII",
+            "Terex",
+            "Nexteer Automotive",
+            "Knorr-Bremse AG",
+            "GKN Aerospace",
+            "Newport News Shipbuilding, A Division of HII",
+            "ResMed",
+            "Daimler Trucks",
+            "DePuy Synthes",
+            "Escorts Kubota Limited",
+            "Bell Flight",
+            "BRP",
+            " Milwaukee Tool",
+            "ICU Medical",
+            "MAN Energy Solutions",
+            "Keith Ferguson (Manager PLM , KM),  Rohit Jigjinni Dir Eng. , Eric Schönenberger Global IT Dir., Jorge Cabero Rodríguez Dir Key Account IT,  Shaun Kartje  IT Regional Dir, Olivier Wettel IT PMO Industry 4.0 Lead  PRedictive Maintenance, ",
+            "Hitachi Astemo.",
+            "GKN Automotive",
+            "Rockwell Collins",
+            "Wabtec Corporation",
+            "ZF Group",
+            "Blue Origin",
+            "Harley-Davidson",
+            "Rivian",
+            "Vorwerk Group VEW",
+            "Spirit Aerosystems",
+            "Dyson",
+            "Bosch Rexroth",
+            "Oceaneering",
+            "Global Foundries",
+            "Subsea7",
+            "Hitachi Rail",
+            "Kohler Co",
+            "Gulfstream Aerospace",
+            "DRÄXLMAIER",
+            "GEA Group.",
+            "ANDRITZ",
+            "Wärtsilä",
+            "Adient",
+            "Delphi",
+            "Autoliv",
+            "L3",
+            "Royal Enfield",
+            "Zimmer Biomet",
+            "BorgWarner",
+            "Mahle",
+            "Textron Specialized Vehicles",
+            "Tenneco",
+            "Hero",
+            "CNH",
+            "HARMAN International",
+            "Faurecia (Forvia)",
+            "TechnipFMC",
+            "Magna International",
+            "Schaeffler",
+            "Lear Corporation",
+            "FCA Fiat Chrysler Automobiles",
+            "Safran",
+            "Johnson Controls",
+            "Continental",
+            "BE Aerospace",
+            "Karma Automotive",
+            "Walker Precision Engineering",
+            "GENTEX Corporation",
+            "Ashok Leyland Chennai",
+            "MAHLE Behr",
+            "JCB",
+            "Detroit Technologies Inc.",
+            "DLH Industries",
+            "Acumuladores Moura",
+            "Pennex",
+            "Nokia Chennai",
+            "Makita Bangalore ",
+            "Vijay Sir Train ADA",
+            "Oracle",
+            "3D Printing",
+            "Garmin",
+            "Collins Aerospace Bangalore",
+            "Autoline Industries USA",
+            "Chemico Mays, LLC. / Chemico Systems, Inc.",
+            "Clark-Cutler-McDermott Company (CCM)",
+            "Compuware",
+            "ICAHN ENTERPRISES LP",
+            "FedEx Corporation",
+            "George P. Johnson Company",
+            "Jones Lang LaSalle",
+            "L&W Group ( Acquired by Autokinton below)",
+            "Laird Group PLC",
+            "Mold Masters Company",
+            "MRM Worldwide",
+            "MWM International",
+            "Ryder",
+            "ECM (Vehicle Delivery Service) Ltd.",
+            "Cartera Gestamp S.L.",
+            "Asia Co., Ltd.",
+            "Central Corporation",
+            "Daedong System",
+            "Daewon Kang Up",
+            "Dongwon-Tech Co., Ltd.",
+            "E-Won Solutech",
+            "Hanwha TechM Co., Ltd",
+            "Jaeyoung Solutec Co., LTD",
+            "Kafus",
+            "Kwang Jin Sang Gong",
+            "Mando Corporation",
+            "Posco",
+            "Pyeong-Hwa Automotive Co.",
+            "SL Corporation",
+            "Sungwoo Hitech Co., ltd",
+            "Wooshin Systems Co., Ltd",
+            "YEONG HWA METAL CO LTD.",
+            "LEIF HÖEGH & CO.AS",
+            "Auma S.A. de C.V",
+            "Denso Corporation",
+            "FANUC LTD",
+            "Fujitsu Ten",
+            "Hirotec Corporation",
+            "Kawasaki Kisen Kaisha Ltd. (K-Line)",
+            "Mitsubishi Heavy Industries Climate Control, Inc",
+            "Mitsubishi Electric",
+            "NGK Spark Plug Co., LTD.",
+            " Nippon Seiki Corporation, Ltd",
+            "Grimaldi Group",
+            "SUNDRAM FASTENERS LIMITED",
+            "BASF SE",
+            " Kirchhoff Automotive GmbH & Co KG",
+            "Mann+Hummel",
+            "Saint Jean Industries",
+            " Starcom MediaVest Group",
+            "Guangdong Hongtu Technology Co., Ltd",
+            "Henan THB Electric Co. Ltd.",
+            "AP Plasman Corporation",
+            "Bend All Automotive Inc",
+            "Cosma International",
+            "Ground Effects Ltd.",
+            "LAKESIDE PLASTICS",
+            "Van-Rob",
+            "PST Eletronica SA",
+            "TMS Transport- und Montagesysteme Gmbh",
+            "Mett Pty Ltd",
+            "Slate",
+            "VE ",
+            "jaguar land rover",
+            "Monarch Tractor",
+            "STRATTEC",
+            "https://www.linkedin.com/company/howa-usa-holdings-inc/",
+            "https://www.linkedin.com/company/antolin/",
+            "Xerox",
+            "Nextracker Inc",
+            "Volvo Group",
+            "Volvo Eicher VECV",
+            "Honda Marine",
+            "ALOFT AeroArchitects",
+            "Air Methods",
+            "Zodiac Aerospace",
+            "https://www.linkedin.com/company/rheem-manufacturing/people/",
+            "https://www.linkedin.com/company/ronaldswayaircraftcompanylimited/",
+            "https://www.linkedin.com/company/amp-sortation/",
+            "https://www.linkedin.com/company/segautomotive/about/",
+            "https://www.linkedin.com/company/aurora-north-america/",
+            "https://www.linkedin.com/company/daimay-automotive-interior/",
+            "HOLON",
+            "The Shyft Group",
+            "Blue Arc EV",
+            "Spartan Motors",
+            "Dodge Industrial",
+            "AGCO",
+            "Mercedez Benz",
+            "Medtronic",
+            "EDGE",
+            "CaptiveAire Systems",
+            "GVW Group",
+            "Autocar Trucks",
+            "Indra",
+            "ESCRIBANO MECHANICAL & ENGINEERING",
+            "BWX Technologies, Inc.",
+            "WB Electronics"
+            // Add your 400 company names here
+        ];
+
+        function searchCompany() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const resultsDiv = document.getElementById('results');
+            
+            if (!searchTerm) {
+                showResults('Please enter a search term.', 'not-found');
+                return;
+            }
+            
+            // Show loading state
+            resultsDiv.innerHTML = '<span class="loading"></span> Searching...';
+            resultsDiv.className = 'results';
+            
+            // Simulate slight delay for better UX
+            setTimeout(() => {
+                const matches = findMatches(searchTerm);
+                
+                if (matches.length === 0) {
+                    showResults('Company not in database', 'not-found');
+                } else {
+                    const resultHTML = `
+                        <div class="company-list">
+                            <strong>Found ${matches.length} match${matches.length > 1 ? 'es' : ''}:</strong>
+                            ${matches.map(company => `<div class="company-item">${company}</div>`).join('')}
+                        </div>
+                    `;
+                    showResults(resultHTML, 'found');
+                }
+            }, 300);
+        }
+        
+        function findMatches(searchTerm) {
+            const normalizedSearch = searchTerm.toLowerCase().trim();
+            return companies.filter(company => 
+                company.toLowerCase().includes(normalizedSearch)
+            );
+        }
+        
+        function showResults(content, type) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = content;
+            resultsDiv.className = `results ${type}`;
+        }
+        
+        // Allow Enter key to trigger search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCompany();
+            }
+        });
+        
+        // Auto-focus search input
+        document.getElementById('searchInput').focus();
+    </script>
+</body>
+</html>
