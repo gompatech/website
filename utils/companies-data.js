@@ -9,7 +9,6 @@
 //     "Google LLC",
 //     "Amazon.com, Inc.",
 //     "Meta Platforms, Inc.",
-//     "Tesla, Inc.",
 //     // Add your 400 company names here
 // ];
 
