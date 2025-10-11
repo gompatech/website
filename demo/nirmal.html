@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nirmal Smart Management System - Command & Control</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 300px;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .date-time {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar-left {
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .zone-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .zone-list h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .zone-item {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .zone-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .zone-item.selected {
+            border-left-color: #4CAF50;
+            background: #e8f5e9;
+        }
+
+        .zone-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .zone-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .zone-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-green { background: #4CAF50; }
+        .status-red { background: #f44336; }
+        .status-yellow { background: #FFC107; }
+
+        .map-container {
+            position: relative;
+            background: #e0e0e0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .map-btn {
+            background: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .map-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .sidebar-right {
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .alerts-section, .personnel-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-item {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .alert-item.critical {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .personnel-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .personnel-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: move;
+        }
+
+        .personnel-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .personnel-info {
+            flex: 1;
+        }
+
+        .personnel-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .personnel-zone {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .notification-badge {
+            background: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .popup-content {
+            padding: 5px;
+        }
+
+        .popup-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .popup-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        .popup-stat {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>
+                <div class="logo">🌊</div>
+                Nirmal Smart Management System
+            </h1>
+            <div class="header-right">
+                <div class="date-time">
+                    <div id="current-date"></div>
+                    <div id="current-time"></div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">SM</div>
+                    <div>
+                        <div style="font-weight: 600;">Supervisor</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Control Center</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-left">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>TOTAL PERSONNEL</h3>
+                    <div class="stat-value">127</div>
+                    <div class="stat-subtitle">Across all zones</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <h3>PRESENT TODAY</h3>
+                    <div class="stat-value">98</div>
+                    <div class="stat-subtitle">77% attendance</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">
+                    <h3>ABSENT</h3>
+                    <div class="stat-value">29</div>
+                    <div class="stat-subtitle">Requires action</div>
+                </div>
+            </div>
+
+            <div class="zone-list">
+                <h2>Cleaning Zones</h2>
+                <div class="zone-item selected" onclick="selectZone(this, 'zone1')">
+                    <div class="zone-name">Shipra Ghat North</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>12 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-red"></span>
+                            <span>3 Absent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone2')">
+                    <div class="zone-name">Ram Ghat Area</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>18 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-red"></span>
+                            <span>7 Absent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone3')">
+                    <div class="zone-name">Kal Bhairav Crossing</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>9 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-yellow"></span>
+                            <span>2 Away</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone4')">
+                    <div class="zone-name">Mangalnath Zone</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>15 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-red"></span>
+                            <span>5 Absent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone5')">
+                    <div class="zone-name">Triveni Ghat</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>21 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-red"></span>
+                            <span>4 Absent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone6')">
+                    <div class="zone-name">Shipra Ghat South</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>14 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-red"></span>
+                            <span>6 Absent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="zone-item" onclick="selectZone(this, 'zone7')">
+                    <div class="zone-name">Kshipra Riverbank East</div>
+                    <div class="zone-stats">
+                        <div class="zone-stat">
+                            <span class="status-dot status-green"></span>
+                            <span>9 Present</span>
+                        </div>
+                        <div class="zone-stat">
+                            <span class="status-dot status-yellow"></span>
+                            <span>1 Away</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="map-controls">
+                <button class="map-btn" onclick="showReallocationMode()">🔄 Reallocate Staff</button>
+                <button class="map-btn" onclick="generateReport()">📊 Generate Report</button>
+                <button class="map-btn" onclick="refreshMap()">🔃 Refresh</button>
+            </div>
+        </div>
+
+        <div class="sidebar-right">
+            <div class="alerts-section">
+                <div class="section-title">
+                    🚨 Active Alerts
+                    <div class="notification-badge">5</div>
+                </div>
+                <div class="alert-item critical">
+                    <strong>Critical:</strong> Ram Ghat Area - 7 personnel absent (28% shortage)
+                    <div class="alert-time">10 minutes ago</div>
+                </div>
+                <div class="alert-item">
+                    <strong>Warning:</strong> Shipra Ghat South - 6 personnel absent
+                    <div class="alert-time">25 minutes ago</div>
+                </div>
+                <div class="alert-item">
+                    <strong>Info:</strong> 2 personnel left Kal Bhairav zone during duty
+                    <div class="alert-time">1 hour ago</div>
+                </div>
+                <div class="alert-item critical">
+                    <strong>Critical:</strong> Mangalnath Zone - 5 personnel absent (25% shortage)
+                    <div class="alert-time">1 hour ago</div>
+                </div>
+                <div class="alert-item">
+                    <strong>Warning:</strong> Overall attendance at 77% - below target
+                    <div class="alert-time">2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="personnel-section">
+                <div class="section-title">
+                    👥 Selected Zone Personnel
+                </div>
+                <div class="personnel-list" id="personnel-list">
+                    <div class="personnel-item" draggable="true">
+                        <div class="personnel-status status-green"></div>
+                        <div class="personnel-info">
+                            <div class="personnel-name">Rajesh Kumar</div>
+                            <div class="personnel-zone">Shipra Ghat North</div>
+                        </div>
+                    </div>
+                    <div class="personnel-item" draggable="true">
+                        <div class="personnel-status status-green"></div>
+                        <div class="personnel-info">
+                            <div class="personnel-name">Amit Sharma</div>
+                            <div class="personnel-zone">Shipra Ghat North</div>
+                        </div>
+                    </div>
+                    <div class="personnel-item" draggable="true">
+                        <div class="personnel-status status-green"></div>
+                        <div class="personnel-info">
+                            <div class="personnel-name">Suresh Patel</div>
+                            <div class="personnel-zone">Shipra Ghat North</div>
+                        </div>
+                    </div>
+                    <div class="personnel-item" draggable="true">
+                        <div class="personnel-status status-red"></div>
+                        <div class="personnel-info">
+                            <div class="personnel-name">Vijay Singh</div>
+                            <div class="personnel-zone">Shipra Ghat North - Absent</div>
+                        </div>
+                    </div>
+                    <div class="personnel-item" draggable="true">
+                        <div class="personnel-status status-green"></div>
+                        <div class="personnel-info">
+                            <div class="personnel-name">Prakash Verma</div>
+                            <div class="personnel-zone">Shipra Ghat North</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="sendNotification()">📱 Send Alert</button>
+                    <button class="btn btn-secondary" onclick="viewDetails()">📋 Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize map centered on Ujjain
+        const map = L.map('map').setView([23.1765, 75.7885], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Define zones with coordinates around Ujjain's Shipra river
+        const zones = [
+            {
+                id: 'zone1',
+                name: 'Shipra Ghat North',
+                coords: [23.1865, 75.7785],
+                present: 12,
+                required: 15,
+                absent: 3,
+                color: '#4CAF50'
+            },
+            {
+                id: 'zone2',
+                name: 'Ram Ghat Area',
+                coords: [23.1795, 75.7815],
+                present: 18,
+                required: 25,
+                absent: 7,
+                color: '#f44336'
+            },
+            {
+                id: 'zone3',
+                name: 'Kal Bhairav Crossing',
+                coords: [23.1725, 75.7865],
+                present: 9,
+                required: 11,
+                absent: 0,
+                away: 2,
+                color: '#FFC107'
+            },
+            {
+                id: 'zone4',
+                name: 'Mangalnath Zone',
+                coords: [23.1685, 75.7755],
+                present: 15,
+                required: 20,
+                absent: 5,
+                color: '#f44336'
+            },
+            {
+                id: 'zone5',
+                name: 'Triveni Ghat',
+                coords: [23.1815, 75.7915],
+                present: 21,
+                required: 25,
+                absent: 4,
+                color: '#4CAF50'
+            },
+            {
+                id: 'zone6',
+                name: 'Shipra Ghat South',
+                coords: [23.1645, 75.7825],
+                present: 14,
+                required: 20,
+                absent: 6,
+                color: '#FF9800'
+            },
+            {
+                id: 'zone7',
+                name: 'Kshipra Riverbank East',
+                coords: [23.1755, 75.7995],
+                present: 9,
+                required: 10,
+                absent: 0,
+                away: 1,
+                color: '#4CAF50'
+            }
+        ];
+
+        // Add zone markers
+        zones.forEach(zone => {
+            const marker = L.circleMarker(zone.coords, {
+                radius: 20,
+                fillColor: zone.color,
+                color: '#fff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.7
+            }).addTo(map);
+
+            const popupContent = `
+                <div class="popup-content">
+                    <div class="popup-title">${zone.name}</div>
+                    <div class="popup-stats">
+                        <div class="popup-stat">
+                            <span>Present:</span>
+                            <strong style="color: #4CAF50">${zone.present}</strong>
+                        </div>
+                        <div class="popup-stat">
+                            <span>Required:</span>
+                            <strong>${zone.required}</strong>
+                        </div>
+                        <div class="popup-stat">
+                            <span>Absent:</span>
+                            <strong style="color: #f44336">${zone.absent}</strong>
+                        </div>
+                        ${zone.away ? `<div class="popup-stat">
+                            <span>Away:</span>
+                            <strong style="color: #FFC107">${zone.away}</strong>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+
+            marker.bindPopup(popupContent);
+
+            // Add label
+            const label = L.marker(zone.coords, {
+                icon: L.divIcon({
+                    className: 'zone-label',
+                    html: `<div style="background: white; padding: 5px 10px; border-radius: 15px; font-size: 11px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">${zone.present}/${zone.required}</div>`,
+                    iconSize: [60, 30],
+                    iconAnchor: [30, -15]
+                })
+            }).addTo(map);
+        });
+
+        // Draw river line (approximate Shipra river path)
+        const riverPath = [
+            [23.1950, 75.7650],
+            [23.1900, 75.7720],
+            [23.1865, 75.7785],
+            [23.1815, 75.7850],
+            [23.1765, 75.7885],
+            [23.1725, 75.7920],
+            [23.1685, 75.7965],
+            [23.1650, 75.8010]
+        ];
+
+        L.polyline(riverPath, {
+            color: '#2196F3',
+            weight: 6,
+            opacity: 0.6,
+            smoothFactor: 1
+        }).addTo(map);
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-IN', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Zone selection
+        function selectZone(element, zoneId) {
+            document.querySelectorAll('.zone-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            // Update personnel list based on selected zone
+            updatePersonnelList(zoneId);
+        }
+
+        function updatePersonnelList(zoneId) {
+            const personnelData = {
+                'zone1': [
+                    {name: 'Rajesh Kumar', status: 'green'},
+                    {name: 'Amit Sharma', status: 'green'},
+                    {name: 'Suresh Patel', status: 'green'},
+                    {name: 'Vijay Singh', status: 'red'},
+                    {name: 'Prakash Verma', status: 'green'}
+                ],
+                'zone2': [
+                    {name: 'Mohan Das', status: 'green'},
+                    {name: 'Ravi Gupta', status: 'red'},
+                    {name: 'Sandeep Kumar', status: 'green'},
+                    {name: 'Dinesh Yadav', status: 'red'}
+                ]
+            };
+
+            const personnel = personnelData[zoneId] || personnelData['zone1'];
+            const list = document.getElementById('personnel-list');
+            list.innerHTML = personnel.map(p => `
+                <div class="personnel-item" draggable="true">
+                    <div class="personnel-status status-${p.status}"></div>
+                    <div class="personnel-info">
+                        <div class="personnel-name">${p.name}</div>
+                        <div class="personnel-zone">${zones.find(z => z.id === zoneId)?.name}${p.status === 'red' ? ' - Absent' : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showReallocationMode() {
+            alert('Reallocation Mode Activated!\n\nClick on zone markers to view personnel, then drag and drop personnel cards to new zones to reallocate staff. Notifications will be sent automatically.');
+        }
+
+        function generateReport() {
+            alert('Generating comprehensive report...\n\n✓ Attendance Summary\n✓ Zone Coverage Analysis\n✓ Hours Worked\n✓ Absence Patterns\n\nReport will be downloaded as PDF.');
+        }
+
+        function refreshMap() {
+            map.invalidateSize();
+            alert('Map refreshed with latest data!');
+        }
+
+        function sendNotification() {
+            alert('Notification sent to selected personnel!\n\n📱 SMS sent\n📲 App notification delivered\n\nPersonnel will acknowledge receipt within 5 minutes.');
+        }
+
+        function viewDetails() {
+            alert('Detailed Personnel Information:\n\n• Attendance History\n• Work Hours Log\n• Zone Assignment History\n• Performance Metrics');
+        }
+    </script>
+</body>
+</html>
