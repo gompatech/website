@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nirmal Smart Management System - Command & Control</title>
+    <title>GompaTech Smart Manpower Administration System - Command & Control</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
@@ -41,6 +41,15 @@
 
         .header h1 {
             font-size: 26px;
+            /* font-weight: 600; */
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-center {
+            font-size: 26px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -50,7 +59,8 @@
         .logo {
             width: 45px;
             height: 45px;
-            background: white;
+            /* background: white; */
+            background: transparent; 
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -381,9 +391,11 @@
     <div class="dashboard-container">
         <div class="header">
             <h1>
-                <div class="logo">🌊</div>
-                Nirmal Smart Management System
+                <!-- <div class="logo">🌊</div> -->
+                <div class="logo"><img src="../images/Logo5.png" alt="logo" width="65" height="65"></div>
+                <div>GompaTech</div> 
             </h1>
+            <div class="header-center">Smart Manpower Administration System</div>
             <div class="header-right">
                 <div class="date-time">
                     <div id="current-date"></div>
