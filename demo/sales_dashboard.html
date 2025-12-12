@@ -1,0 +1,878 @@
+<!-- # sales_dashboard.html
+# Usage: 	
+#           open sales_dashboard.html in a browser. point to sales.tsv
+#
+# What:         Sales Operating System / Dasbhoard : Funnel & Pipeline
+# Dependency:   Leads database  : point to sales.tsv
+# How:
+#            Metrics:
+#                  
+# 
+# Next Steps:
+#dev_notes:
+# 
+# code: 
+# concept:  
+#bug_list
+#
+#feature_todo
+#refresh after changes to sales.tsv manual/auto
+#pipeline : add count
+#pipeline : link to table
+#update: drag and drop to new status
+#update: status, next step date, next step action, notes, source
+#create: new lead form 
+#read: due today
+#read: sort
+#multi_user
+#funnel : expandable widget
+#
+#feature_done
+#
+#!/bin/bash
+#FILE="sales.tsv" -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Sales Pipeline with Funnel</title> -->
+    <title>GT Sales Operating System</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #345b9b;
+            margin-bottom: 30px;
+        }
+        
+        .upload-section {
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            background: #f1f5f9;
+        }
+        
+        input[type="file"] {
+            margin: 5px 0;
+        }
+        
+        /* Tooltip styles optimized for Safari */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip-content {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            z-index: 1000;
+            background: #1e293b;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            width: 400px;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        
+        .tooltip-wrapper:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .tooltip-content h3 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            color: #60a5fa;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+        }
+        
+        .tooltip-content p {
+            margin: 8px 0;
+        }
+        
+        .tooltip-content strong {
+            color: #cbd5e1;
+            display: block;
+            margin-top: 12px;
+        }
+        
+        .tooltip-content em {
+            color: #94a3b8;
+            font-style: italic;
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        /* Diagram container with funnel overlay */
+        .diagram-wrapper {
+            position: relative;
+            padding: 20px;
+        }
+        
+        /* Sales funnel overlay */
+        .funnel-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 2px solid #e2e8f0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .funnel-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 6px;
+            text-align: center;
+            writing-mode: horizontal-tb;
+        }
+        
+        .funnel-main {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .funnel-left {
+            flex: 1;
+        }
+        
+        .funnel-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        #mini-funnel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+        
+        .mini-funnel-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1px;
+            width: 100%;
+        }
+        
+        .mini-funnel-stage {
+            padding: 6px 10px;
+            border-radius: 4px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .mini-funnel-stage:hover {
+            transform: scale(1.05);
+        }
+        
+        .stage-new { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .stage-contacted { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stage-qualified { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stage-proposal { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stage-won { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .stage-lost { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); }
+        .stage-stalled { background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%); }
+        
+        .mini-stage-label {
+            font-size: 9px;
+            margin-bottom: 1px;
+        }
+        
+        .mini-stage-count {
+            font-size: 8px;
+            opacity: 0.9;
+        }
+        
+        /* Mermaid container */
+        .mermaid {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Instructions */
+        .instructions {
+            display: none;
+        }
+        
+        /* Detail table styles */
+        .detail-table-container {
+            margin-top: 30px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .detail-table-container h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .table-wrapper {
+            overflow: auto;
+            max-height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+        
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .detail-table th {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+        }
+        
+        .detail-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        .detail-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .close-table-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 10px;
+        }
+        
+        .close-table-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .info-message {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <h1><div style="text-align: left;">GompaTech</div> <div style="text-align: center;">S O S</div> <div style="text-align: right;"> Sales Operating System</div></h1> -->
+        <h1 style="
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #1E2A38;
+            margin: 20px 0 10px 0;
+            ">
+            <span style="font-size: 2.2em; color: #1f4b7a;">GT</span>
+            <span style="font-size: 2.2em; color: #FF9800;">SOS</span><br>
+            <span style="font-size: 0.9em; font-weight: 400; color: #666;">
+                GompaTech Sales Operating System
+            </span>
+            <hr style="width: 60%; border: 0; border-top: 2px solid #e0e0e0; margin: 10px auto 20px auto;">
+        </h1>
+        <!-- <header style="
+            background: #fff;
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 1px solid #eaeaea;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+            <h1 style="
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            margin: 0;
+            line-height: 1.2;
+            ">
+                <span style="font-size: 2.4em; font-weight: 700; color: #185799;">GT</span>
+                <span style="font-size: 2.4em; font-weight: 700; color: #FF9800;">SOS</span><br>
+                <span style="font-size: 0.95em; font-weight: 400; color: #777; letter-spacing: 1px;">
+                    GompaTech Sales Operating System
+                </span>
+            </h1>
+        </header>  -->
+        
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept=".tsv,.txt">
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="instructions">
+            <p><strong>💡 Hover over each status node to see detailed execution instructions</strong></p>
+            <p><strong>📊 Click on funnel stages to view corresponding leads in detail table below</strong></p>
+        </div>
+        
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'base',
+                themeVariables: {
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                }
+            });
+        </script>
+        
+        <div class="diagram-wrapper">
+            <!-- Sales funnel overlay -->
+            <div class="funnel-overlay">
+                <div class="funnel-left">
+                    <div class="funnel-title">Sales Funnel</div>
+                    <div id="mini-funnel-container">
+                        <div class="mini-stage-label" style="color: #64748b; font-size: 9px;">Upload sales.tsv</div>
+                    </div>
+                </div>
+                <div class="funnel-right" id="stalled-container">
+                </div>
+            </div>
+            
+            <div class="mermaid">
+                graph TD
+                    subgraph Pipeline["<span style='font-size:21px;font-weight:bold;color:#334155;'>Pipeline</span>"]
+                        direction LR
+                        NEW("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🔵 NEW</div>
+                            <hr/>
+                            <b>Goal:</b> Qualify/Disqualify<br/>
+                            <b>Action:</b> Research & send initial contact
+                        ")
+                        CONTACTED("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🟡 CONTACTED</div>
+                            <hr/>
+                            <b>Goal:</b> Get a response<br/>
+                            <b>Action:</b> Send 1-2 follow-ups
+                        ")
+                        QUALIFIED("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🟢 QUALIFIED</div>
+                            <hr/>
+                            <b>Goal:</b> Define problem & scope<br/>
+                            <b>Action:</b> Discovery call/meeting
+                        ")
+                        PROPOSAL("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🟠 PROPOSAL</div>
+                            <hr/>
+                            <b>Goal:</b> Close the deal<br/>
+                            <b>Action:</b> Present & follow up
+                        ")
+                        WON("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🏆 WON</div>
+                            <hr/>
+                            <b>Celebrate & Deliver!</b>
+                        ")
+                        LOST("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🗑️ LOST</div>
+                            <hr/>
+                            <b>Learn & move on</b>
+                        ")
+                        STALLED("
+                            <div style='text-align:left; font-weight:bold; font-size:1.1em;'>🅿️ STALLED</div>
+                            <hr/>
+                            <b>In parking lot for future</b>
+                        ")
+                        NEW -- No Response --> CONTACTED
+                        NEW -- Positive Response --> QUALIFIED
+                        NEW -- Negative Response --> LOST
+                        
+                        CONTACTED -- They Reply --> QUALIFIED
+                        CONTACTED -- No Reply (after 2-3 tries) --> LOST
+                        
+                        QUALIFIED -- Scope Agreed --> PROPOSAL
+                        QUALIFIED -- No Urgency/Budget --> STALLED
+                        QUALIFIED -- Not a Good Fit --> LOST
+                        
+                        PROPOSAL -- Accepted --> WON
+                        PROPOSAL -- Rejected --> LOST
+
+                    end
+                    
+                    style NEW fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px
+                    style CONTACTED fill:#fef9c3,stroke:#facc15,stroke-width:2px
+                    style QUALIFIED fill:#dcfce7,stroke:#4ade80,stroke-width:2px
+                    style PROPOSAL fill:#ffedd5,stroke:#fb923c,stroke-width:2px
+                    style WON fill:#bbf7d0,stroke:#22c55e,stroke-width:4px
+                    style LOST fill:#fee2e2,stroke:#f87171,stroke-width:2px
+                    style STALLED fill:#e5e7eb,stroke:#9ca3af,stroke-width:2px
+            </div>
+        </div>
+        
+        <!-- Detail table positioned below the flowchart -->
+        <div id="detail-table-container" class="detail-table-container">
+            <button class="close-table-btn" onclick="closeDetailTable()">Close</button>
+            <h3 id="detail-table-title"></h3>
+            <div class="table-wrapper">
+                <table id="detail-table" class="detail-table"></table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const STAGE_ORDER = ['NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL'];
+        const MIN_WIDTH = 50;
+        const MAX_WIDTH = 180;
+        let rawFileContent = '';
+        let columnHeaders = [];
+        
+        // Tooltip data
+        const tooltipData = {
+            'NEW': {
+                title: '🔵 NEW - First Contact Strategy',
+                content: `<strong>Your Goal:</strong> Qualify or disqualify the lead as quickly as possible. Find out if there's a real problem you can solve.
+                
+                <strong>How to Execute:</strong>
+                <p><strong>5-Minute Recon:</strong> Look up the person and company on LinkedIn. Understand their role and what their business does.</p>
+                <p><strong>Initial Contact:</strong> Send a short, direct email or LinkedIn message referencing the source of the lead and asking a question to probe for a problem.</p>
+                <p><strong>Example:</strong> "Hello [Name], Alberto Comas suggested I reach out. My expertise is in streamlining complex engineering lifecycles with PLM, similar to work I've done for companies in the automotive and aerospace sectors. Is optimizing your product data management a priority for you currently?"</p>
+                
+                <strong>Outcomes & Next Status:</strong>
+                <p>✅ Positive Response ("Yes, tell me more") → QUALIFIED</p>
+                <p>⏳ No Response → CONTACTED (Set NextStepDate for 7 days)</p>
+                <p>❌ Negative Response → LOST</p>`
+            },
+            'CONTACTED': {
+                title: '🟡 CONTACTED - Follow-Up Strategy',
+                content: `<strong>Your Goal:</strong> Get a response and start a conversation.
+                
+                <strong>How to Execute:</strong>
+                <p>Send one or two polite follow-up messages, spaced about a week apart. Keep it simple.</p>
+                <p><strong>Example:</strong> "Hi [Name], just wanted to briefly follow up on my email from last week. Let me know if you had any thoughts. Thanks, Siddharth."</p>
+                
+                <strong>Outcomes & Next Status:</strong>
+                <p>✅ They Reply & Engage → QUALIFIED</p>
+                <p>⏳ Still No Response (after 2-3 attempts) → LOST (Don't waste time chasing ghosts)</p>
+                <p>❌ Negative Response → LOST</p>`
+            },
+            'QUALIFIED': {
+                title: '🟢 QUALIFIED - Discovery & Problem Definition',
+                content: `<strong>Your Goal:</strong> Deeply understand their problem and confirm they have the budget and authority to solve it. Build the business case for a proposal.
+                
+                <strong>How to Execute:</strong>
+                <p>This stage is all about conversation (calls or meetings). Ask open-ended questions to understand their pain points. Dig into the financial impact of their problem.</p>
+                <p><strong>Example:</strong> "You mentioned the bearing on the main conveyor fails unexpectedly. How many hours of production do you typically lose when that happens? What does that cost the business?"</p>
+                
+                <strong>Outcomes & Next Status:</strong>
+                <p>✅ Clear Problem & Agreement on Solution → PROPOSAL</p>
+                <p>⏸️ Problem Exists, but No Budget/Urgency → STALLED (Set NextStepDate 3-6 months out)</p>
+                <p>❌ Not a Good Fit → LOST</p>`
+            },
+            'PROPOSAL': {
+                title: '🟠 PROPOSAL - Closing Strategy',
+                content: `<strong>Your Goal:</strong> Close the deal and get a signed contract.
+                
+                <strong>How to Execute:</strong>
+                <p><strong>Present, Don't Just Send:</strong> If possible, walk them through the proposal on a call to answer questions immediately.</p>
+                <p><strong>Actively Follow Up:</strong> Don't wait for them to call you. Set a NextStepDate for 7-10 days after sending the proposal and call them to ask for feedback and a decision.</p>
+                <p><strong>Example:</strong> "Hello Madhur ji, Siddharth here. I'm calling to follow up on the automation proposal I sent last week. Do you have a few minutes to discuss it?"</p>
+                
+                <strong>Outcomes & Next Status:</strong>
+                <p>🎉 They Accept → WON</p>
+                <p>❌ They Reject → LOST (Always ask "why" to learn for next time)</p>
+                <p>⏳ They Need More Time → Stay in PROPOSAL, set new NextStepDate</p>`
+            },
+            'WON': {
+                title: '🏆 WON - Success!',
+                content: `<strong>Action Required:</strong>
+                <p>Celebrate the win and begin delivery!</p>
+                <p>Document what worked well in this sale for future reference.</p>
+                <em>Great job closing the deal!</em>`
+            },
+            'LOST': {
+                title: '🗑️ LOST - Learning Opportunity',
+                content: `<strong>Action Required:</strong>
+                <p>Document the reason for the loss. This is critical for continuous improvement.</p>
+                <p>Ask yourself: What could have been done differently? Was it price, timing, fit, or something else?</p>
+                <em>Every loss is a lesson for the next opportunity.</em>`
+            },
+            'STALLED': {
+                title: '🅿️ STALLED - Future Nurturing',
+                content: `<strong>Action Required:</strong>
+                <p><strong>Document:</strong> What specific conditions will bring this lead back to active status?</p>
+                <p><strong>Set Next Touch-Base Date:</strong> Schedule a follow-up far in the future (3-6 months typically).</p>
+                <p>This lead has potential but lacks urgency or budget right now. Keep them warm for when circumstances change.</p>
+                <em>Stay on their radar without being pushy.</em>`
+            }
+        };
+        
+        // Wait for Mermaid to render, then add tooltips
+        setTimeout(() => {
+            Object.keys(tooltipData).forEach(nodeId => {
+                const nodes = document.querySelectorAll(`[id*="${nodeId}"]`);
+                nodes.forEach(node => {
+                    if (node.tagName === 'g' && node.querySelector('rect, polygon')) {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'tooltip-wrapper';
+                        wrapper.style.position = 'absolute';
+                        wrapper.style.pointerEvents = 'auto';
+                        
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip-content';
+                        tooltip.innerHTML = `<h3>${tooltipData[nodeId].title}</h3>${tooltipData[nodeId].content}`;
+                        
+                        node.style.cursor = 'help';
+                        
+                        let timeoutId;
+                        node.addEventListener('mouseenter', (e) => {
+                            clearTimeout(timeoutId);
+                            const rect = node.getBoundingClientRect();
+                            wrapper.style.left = `${rect.left + rect.width/2}px`;
+                            wrapper.style.top = `${rect.top}px`;
+                            document.body.appendChild(wrapper);
+                            wrapper.appendChild(tooltip);
+                            
+                            setTimeout(() => {
+                                tooltip.style.visibility = 'visible';
+                                tooltip.style.opacity = '1';
+                            }, 100);
+                        });
+                        
+                        node.addEventListener('mouseleave', () => {
+                            timeoutId = setTimeout(() => {
+                                if (wrapper.parentNode) {
+                                    tooltip.style.visibility = 'hidden';
+                                    tooltip.style.opacity = '0';
+                                    setTimeout(() => {
+                                        if (wrapper.parentNode) {
+                                            document.body.removeChild(wrapper);
+                                        }
+                                    }, 300);
+                                }
+                            }, 100);
+                        });
+                    }
+                });
+            });
+        }, 1500);
+        
+        // File upload handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    processFile(event.target.result);
+                } catch (error) {
+                    showMessage('Error processing file: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Try to load sales.tsv automatically
+        window.addEventListener('load', async function() {
+            try {
+                if (window.fs && window.fs.readFile) {
+                    try {
+                        const fileContent = await window.fs.readFile('sales.tsv', { encoding: 'utf8' });
+                        processFile(fileContent);
+                        return;
+                    } catch (e) {
+                        console.log('window.fs failed');
+                    }
+                }
+                
+                try {
+                    const response = await fetch('sales.tsv');
+                    if (response.ok) {
+                        const content = await response.text();
+                        processFile(content);
+                        return;
+                    }
+                } catch (e) {
+                    console.log('fetch failed');
+                }
+            } catch (error) {
+                console.log('Auto-load failed, waiting for upload');
+            }
+        });
+        
+        function processFile(content) {
+            const lines = content.trim().split('\n');
+            if (lines.length < 2) {
+                showMessage('File appears to be empty or invalid', 'error');
+                return;
+            }
+
+            rawFileContent = content;
+            columnHeaders = lines[0].split('\t');
+
+            const statusCounts = {
+                'NEW': 0,
+                'CONTACTED': 0,
+                'QUALIFIED': 0,
+                'PROPOSAL': 0,
+                'WON': 0,
+                'LOST': 0,
+                'STALLED': 0
+            };
+
+            for (let i = 1; i < lines.length; i++) {
+                const columns = lines[i].split('\t');
+                if (columns.length > 5) {
+                    const status = columns[5].trim().toUpperCase();
+                    if (statusCounts.hasOwnProperty(status)) {
+                        statusCounts[status]++;
+                    }
+                }
+            }
+
+            const totalLeads = Object.values(statusCounts).reduce((a, b) => a + b, 0);
+            
+            if (totalLeads === 0) {
+                showMessage('No valid status data found in the file', 'error');
+                return;
+            }
+
+            generateMiniFunnel(statusCounts, totalLeads);
+            clearMessage();
+        }
+        
+        function calculateWidth(count, maxCount) {
+            if (count === 0) return MIN_WIDTH;
+            const range = MAX_WIDTH - MIN_WIDTH;
+            return MIN_WIDTH + (count / maxCount) * range;
+        }
+        
+        function generateMiniFunnel(counts, total) {
+            const funnelContainer = document.getElementById('mini-funnel-container');
+            const stalledContainer = document.getElementById('stalled-container');
+            funnelContainer.innerHTML = '';
+            stalledContainer.innerHTML = '';
+
+            const maxCount = Math.max(...Object.values(counts));
+
+            STAGE_ORDER.forEach(stage => {
+                const count = counts[stage];
+                const width = calculateWidth(count, maxCount);
+                
+                const row = document.createElement('div');
+                row.className = 'mini-funnel-row';
+                
+                const stageDiv = document.createElement('div');
+                stageDiv.className = `mini-funnel-stage stage-${stage.toLowerCase()}`;
+                stageDiv.style.width = `${width}px`;
+                stageDiv.innerHTML = `
+                    <div class="mini-stage-label">${stage}</div>
+                    <div class="mini-stage-count">${count}</div>
+                `;
+                stageDiv.onclick = () => showDetailTable(stage);
+                
+                row.appendChild(stageDiv);
+                funnelContainer.appendChild(row);
+            });
+
+            const closedCount = counts['WON'] + counts['LOST'];
+            const closedWidth = calculateWidth(closedCount, maxCount);
+            
+            const closedRow = document.createElement('div');
+            closedRow.className = 'mini-funnel-row';
+            
+            if (closedCount > 0) {
+                const wonRatio = counts['WON'] / closedCount;
+                const lostRatio = counts['LOST'] / closedCount;
+                
+                const wonWidth = closedWidth * wonRatio;
+                const lostWidth = closedWidth * lostRatio;
+                
+                const wonDiv = document.createElement('div');
+                wonDiv.className = 'mini-funnel-stage stage-won';
+                wonDiv.style.width = `${wonWidth}px`;
+                wonDiv.innerHTML = `
+                    <div class="mini-stage-label">WON</div>
+                    <div class="mini-stage-count">${counts['WON']}</div>
+                `;
+                wonDiv.onclick = () => showDetailTable('WON');
+                
+                const lostDiv = document.createElement('div');
+                lostDiv.className = 'mini-funnel-stage stage-lost';
+                lostDiv.style.width = `${lostWidth}px`;
+                lostDiv.innerHTML = `
+                    <div class="mini-stage-label">LOST</div>
+                    <div class="mini-stage-count">${counts['LOST']}</div>
+                `;
+                lostDiv.onclick = () => showDetailTable('LOST');
+                
+                closedRow.appendChild(wonDiv);
+                closedRow.appendChild(lostDiv);
+            } else {
+                const wonDiv = document.createElement('div');
+                wonDiv.className = 'mini-funnel-stage stage-won';
+                wonDiv.style.width = `${MIN_WIDTH / 2}px`;
+                wonDiv.innerHTML = `
+                    <div class="mini-stage-label">WON</div>
+                    <div class="mini-stage-count">0</div>
+                `;
+                wonDiv.onclick = () => showDetailTable('WON');
+                
+                const lostDiv = document.createElement('div');
+                lostDiv.className = 'mini-funnel-stage stage-lost';
+                lostDiv.style.width = `${MIN_WIDTH / 2}px`;
+                lostDiv.innerHTML = `
+                    <div class="mini-stage-label">LOST</div>
+                    <div class="mini-stage-count">0</div>
+                `;
+                lostDiv.onclick = () => showDetailTable('LOST');
+                
+                closedRow.appendChild(wonDiv);
+                closedRow.appendChild(lostDiv);
+            }
+            
+            funnelContainer.appendChild(closedRow);
+
+            // STALLED positioned to the right
+            const stalledWidth = calculateWidth(counts['STALLED'], maxCount);
+            
+            const stalledDiv = document.createElement('div');
+            stalledDiv.className = 'mini-funnel-stage stage-stalled';
+            stalledDiv.style.width = `${stalledWidth}px`;
+            stalledDiv.innerHTML = `
+                <div class="mini-stage-label">STALLED</div>
+                <div class="mini-stage-count">${counts['STALLED']}</div>
+            `;
+            stalledDiv.onclick = () => showDetailTable('STALLED');
+            
+            stalledContainer.appendChild(stalledDiv);
+        }
+        
+        function showDetailTable(status) {
+            const lines = rawFileContent.trim().split('\n');
+            
+            const filteredLines = [];
+            for (let i = 1; i < lines.length; i++) {
+                const columns = lines[i].split('\t');
+                if (columns.length > 5 && columns[5].trim().toUpperCase() === status.toUpperCase()) {
+                    filteredLines.push(columns);
+                }
+            }
+
+            const tableContainer = document.getElementById('detail-table-container');
+            const tableTitle = document.getElementById('detail-table-title');
+            const table = document.getElementById('detail-table');
+            
+            tableTitle.textContent = `${status} Leads (${filteredLines.length} records)`;
+            
+            let tableHTML = '<thead><tr>';
+            columnHeaders.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+            
+            if (filteredLines.length === 0) {
+                tableHTML += `<tr><td colspan="${columnHeaders.length}" style="text-align:center; padding:20px;">No records found for ${status}</td></tr>`;
+            } else {
+                filteredLines.forEach(columns => {
+                    tableHTML += '<tr>';
+                    columns.forEach(col => {
+                        tableHTML += `<td>${col || ''}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+            }
+            
+            tableHTML += '</tbody>';
+            table.innerHTML = tableHTML;
+            
+            tableContainer.style.display = 'block';
+            tableContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function closeDetailTable() {
+            document.getElementById('detail-table-container').style.display = 'none';
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+        }
+        
+        function clearMessage() {
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = 'none';
+        }
+        
+        // Make closeDetailTable globally accessible
+        window.closeDetailTable = closeDetailTable;
+    </script>
+</body>
+</html>

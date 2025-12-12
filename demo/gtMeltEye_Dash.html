@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Foundry Operations Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .header-title h1 {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .header-title .company-name {
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .header-title p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .time-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .date-display {
+            color: #9ca3af;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .alert-banner {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border: 2px solid #ef4444;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-icon {
+            font-size: 32px;
+        }
+
+        .alert-text h3 {
+            font-size: 20px;
+            color: #fef2f2;
+            margin-bottom: 5px;
+        }
+
+        .alert-text p {
+            color: #fecaca;
+            font-size: 14px;
+        }
+
+        .furnace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .furnace-card {
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .furnace-card.warning {
+            background: rgba(113, 63, 18, 0.6);
+            border-color: #eab308;
+        }
+
+        .furnace-card.critical {
+            background: rgba(127, 29, 29, 0.6);
+            border-color: #ef4444;
+        }
+
+        .furnace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .furnace-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .furnace-icon {
+            font-size: 36px;
+        }
+
+        .furnace-details h2 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .furnace-details .batch {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .temperature {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fb923c;
+            margin-bottom: 5px;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .phase-badge.active {
+            background: #065f46;
+            color: #6ee7b7;
+        }
+
+        .phase-badge.idle {
+            background: #374151;
+            color: #9ca3af;
+        }
+
+        .operations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .operation-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+
+        .operation-item.complete {
+            background: rgba(6, 95, 70, 0.3);
+            border-color: #059669;
+        }
+
+        .operation-item.pending {
+            background: rgba(113, 63, 18, 0.3);
+            border-color: #d97706;
+        }
+
+        .operation-item.overdue {
+            background: rgba(127, 29, 29, 0.4);
+            border-color: #dc2626;
+        }
+
+        .operation-item.na {
+            background: rgba(55, 65, 81, 0.3);
+            border-color: #4b5563;
+        }
+
+        .operation-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .op-icon {
+            font-size: 20px;
+        }
+
+        .op-icon.overdue {
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .operation-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .operation-time {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .furnace-alerts {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(17, 24, 39, 0.8);
+            border-radius: 6px;
+        }
+
+        .furnace-alerts-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #fca5a5;
+            margin-bottom: 5px;
+        }
+
+        .furnace-alerts-list {
+            font-size: 12px;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .alerts-panel {
+            background: rgba(31, 41, 55, 0.8);
+            border: 2px solid #374151;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .alerts-panel-title {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .alert-item.critical {
+            background: rgba(127, 29, 29, 0.4);
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-item.warning {
+            background: rgba(113, 63, 18, 0.3);
+            border-left: 4px solid #eab308;
+        }
+
+        .alert-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-item-icon {
+            font-size: 24px;
+        }
+
+        .alert-item-text h4 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .alert-item-text p {
+            font-size: 13px;
+            color: #d1d5db;
+        }
+
+        .severity-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .severity-badge.critical {
+            background: #7f1d1d;
+            color: #fef2f2;
+        }
+
+        .severity-badge.warning {
+            background: #713f12;
+            color: #fef3c7;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #374151;
+        }
+
+        .footer-bold {
+            font-weight: bold;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .furnace-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+            }
+            
+            .date-display {
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .watermark {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Watermark -->
+    <div class="watermark">GT CONFIDENTIAL - DEMO</div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <img src="/Users/siddharthsolanki/Documents/gompaTechOfficial/Marketing/Logo5.png" alt="GompaTech Logo" class="company-logo">
+                <div class="header-title">
+                    <h1><span class="company-name">GompaTech</span> MeltEye</h1>
+                    <p>Real-time Monitoring & Alerts</p>
+                </div>
+            </div>
+            <div>
+                <div class="time-display" id="time">14:52:30</div>
+                <div class="date-display" id="date">Thursday, December 04, 2025</div>
+            </div>
+        </div>
+
+        <!-- Alert Banner -->
+        <div class="alert-banner">
+            <div class="alert-content">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-text">
+                    <h3>3 Critical Alert(s) | 2 Warning(s)</h3>
+                    <p>Immediate action required for missed operations</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Furnace Grid -->
+        <div class="furnace-grid">
+            <!-- Furnace A -->
+            <div class="furnace-card critical">
+                <div class="furnace-header">
+                    <div class="furnace-info">
+                        <div class="furnace-icon">🔥</div>
+                        <div class="furnace-details">
+                            <h2>Furnace A</h2>
+                            <div class="batch">Heat: H-2401</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="temperature">1650°C</div>
+                        <span class="phase-badge active">Melting</span>
+                    </div>
+                </div>
+                <div class="operations-list">
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Deslagging</span>
+                        </div>
+                        <span class="operation-time">14:23</span>
+                    </div>
+                    <div class="operation-item overdue">
+                        <div class="operation-left">
+                            <div class="op-icon overdue">⚠️</div>
+                            <span class="operation-name">Bath Sampling</span>
+                        </div>
+                        <span class="operation-time">OVERDUE</span>
+                    </div>
+                    <div class="operation-item pending">
+                        <div class="operation-left">
+                            <div class="op-icon">⏱️</div>
+                            <span class="operation-name">Coin Sampling</span>
+                        </div>
+                        <span class="operation-time">Pending</span>
+                    </div>
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Temp Check</span>
+                        </div>
+                        <span class="operation-time">14:45</span>
+                    </div>
+                </div>
+                <div class="furnace-alerts">
+                    <div class="furnace-alerts-title">⚠ 2 Alert(s)</div>
+                    <div class="furnace-alerts-list">
+                        • Bath Sampling not completed<br>
+                        • Coin Sampling not completed
+                    </div>
+                </div>
+            </div>
+
+            <!-- Furnace B -->
+            <div class="furnace-card">
+                <div class="furnace-header">
+                    <div class="furnace-info">
+                        <div class="furnace-icon">🔥</div>
+                        <div class="furnace-details">
+                            <h2>Furnace B</h2>
+                            <div class="batch">Heat: H-2402</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="temperature">1680°C</div>
+                        <span class="phase-badge active">Refining</span>
+                    </div>
+                </div>
+                <div class="operations-list">
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Deslagging</span>
+                        </div>
+                        <span class="operation-time">13:15</span>
+                    </div>
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Bath Sampling</span>
+                        </div>
+                        <span class="operation-time">14:10</span>
+                    </div>
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Coin Sampling</span>
+                        </div>
+                        <span class="operation-time">14:12</span>
+                    </div>
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Temp Check</span>
+                        </div>
+                        <span class="operation-time">14:30</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Furnace C -->
+            <div class="furnace-card critical">
+                <div class="furnace-header">
+                    <div class="furnace-info">
+                        <div class="furnace-icon">🔥</div>
+                        <div class="furnace-details">
+                            <h2>Furnace C</h2>
+                            <div class="batch">Heat: H-2403</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="temperature">1625°C</div>
+                        <span class="phase-badge active">Melting</span>
+                    </div>
+                </div>
+                <div class="operations-list">
+                    <div class="operation-item overdue">
+                        <div class="operation-left">
+                            <div class="op-icon overdue">⚠️</div>
+                            <span class="operation-name">Deslagging</span>
+                        </div>
+                        <span class="operation-time">OVERDUE</span>
+                    </div>
+                    <div class="operation-item pending">
+                        <div class="operation-left">
+                            <div class="op-icon">⏱️</div>
+                            <span class="operation-name">Bath Sampling</span>
+                        </div>
+                        <span class="operation-time">Pending</span>
+                    </div>
+                    <div class="operation-item pending">
+                        <div class="operation-left">
+                            <div class="op-icon">⏱️</div>
+                            <span class="operation-name">Coin Sampling</span>
+                        </div>
+                        <span class="operation-time">Pending</span>
+                    </div>
+                    <div class="operation-item complete">
+                        <div class="operation-left">
+                            <div class="op-icon">✅</div>
+                            <span class="operation-name">Temp Check</span>
+                        </div>
+                        <span class="operation-time">14:50</span>
+                    </div>
+                </div>
+                <div class="furnace-alerts">
+                    <div class="furnace-alerts-title">⚠ 3 Alert(s)</div>
+                    <div class="furnace-alerts-list">
+                        • Deslagging not completed<br>
+                        • Bath Sampling not completed<br>
+                        • Coin Sampling not completed
+                    </div>
+                </div>
+            </div>
+
+            <!-- Furnace D -->
+            <div class="furnace-card">
+                <div class="furnace-header">
+                    <div class="furnace-info">
+                        <div class="furnace-icon" style="filter: grayscale(1); opacity: 0.5;">🔥</div>
+                        <div class="furnace-details">
+                            <h2>Furnace D</h2>
+                            <div class="batch">Heat: -</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="temperature" style="color: #9ca3af;">850°C</div>
+                        <span class="phase-badge idle">Cooling</span>
+                    </div>
+                </div>
+                <div class="operations-list">
+                    <div class="operation-item na">
+                        <div class="operation-left">
+                            <div class="op-icon">⭕</div>
+                            <span class="operation-name">Deslagging</span>
+                        </div>
+                        <span class="operation-time">N/A</span>
+                    </div>
+                    <div class="operation-item na">
+                        <div class="operation-left">
+                            <div class="op-icon">⭕</div>
+                            <span class="operation-name">Bath Sampling</span>
+                        </div>
+                        <span class="operation-time">N/A</span>
+                    </div>
+                    <div class="operation-item na">
+                        <div class="operation-left">
+                            <div class="op-icon">⭕</div>
+                            <span class="operation-name">Coin Sampling</span>
+                        </div>
+                        <span class="operation-time">N/A</span>
+                    </div>
+                    <div class="operation-item na">
+                        <div class="operation-left">
+                            <div class="op-icon">⭕</div>
+                            <span class="operation-name">Temp Check</span>
+                        </div>
+                        <span class="operation-time">N/A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Panel -->
+        <div class="alerts-panel">
+            <div class="alerts-panel-title">🚨 Active Alerts</div>
+            
+            <div class="alert-item critical">
+                <div class="alert-item-left">
+                    <div class="alert-item-icon">⚠️</div>
+                    <div class="alert-item-text">
+                        <h4>Furnace A - Bath Sampling</h4>
+                        <p>Heat: H-2401</p>
+                    </div>
+                </div>
+                <span class="severity-badge critical">CRITICAL</span>
+            </div>
+
+            <div class="alert-item warning">
+                <div class="alert-item-left">
+                    <div class="alert-item-icon">⚠️</div>
+                    <div class="alert-item-text">
+                        <h4>Furnace A - Coin Sampling</h4>
+                        <p>Heat: H-2401</p>
+                    </div>
+                </div>
+                <span class="severity-badge warning">WARNING</span>
+            </div>
+
+            <div class="alert-item critical">
+                <div class="alert-item-left">
+                    <div class="alert-item-icon">⚠️</div>
+                    <div class="alert-item-text">
+                        <h4>Furnace C - Deslagging</h4>
+                        <p>Heat: H-2403</p>
+                    </div>
+                </div>
+                <span class="severity-badge critical">CRITICAL</span>
+            </div>
+
+            <div class="alert-item warning">
+                <div class="alert-item-left">
+                    <div class="alert-item-icon">⚠️</div>
+                    <div class="alert-item-text">
+                        <h4>Furnace C - Bath Sampling</h4>
+                        <p>Heat: H-2403</p>
+                    </div>
+                </div>
+                <span class="severity-badge warning">WARNING</span>
+            </div>
+
+            <div class="alert-item warning">
+                <div class="alert-item-left">
+                    <div class="alert-item-icon">⚠️</div>
+                    <div class="alert-item-text">
+                        <h4>Furnace C - Coin Sampling</h4>
+                        <p>Heat: H-2403</p>
+                    </div>
+                </div>
+                <span class="severity-badge warning">WARNING</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span class="footer-bold">GompaTech Confidential</span> | All Rights Reserved © 2025
+        </div>
+    </div>
+
+    <script>
+        // Update time every second
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            const dateString = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('time').textContent = timeString;
+            document.getElementById('date').textContent = dateString;
+        }
+
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
+
+<!-- https://claude.ai/chat/eac0e99f-5c5a-4449-b16d-f43d8b01c1c0 -->
