@@ -1,0 +1,80 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "The Human Factor in Digital Transformation",
+      "date": "Oct 24, 2025",
+      "category": "Strategy",
+      "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+      ],
+      "excerpt": "While technology drives Industry 4.0, successful digital transformation ultimately depends on people.",
+      "content": "<p>Industry 4.0 is often discussed in terms of sensors, cloud computing, and AI. However, the most critical component is often overlooked: the human workforce.</p><h3>Why People Matter</h3><p>Technology is an enabler, not a replacer. Our research shows that companies investing in upskilling their workforce see 3x higher ROI from digital initiatives.</p><h3>The Strategy</h3><p>We recommend a 'Human-First' approach where digital tools are designed to augment human capabilities, reducing repetitive tasks and freeing up time for creative problem solving.</p>"
+    },
+    {
+      "id": 2,
+      "title": "Sustainable Supply Chains with AI",
+      "date": "Oct 10, 2025",
+      "category": "Sustainability",
+      "image": "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
+      ],
+      "excerpt": "Building green logistics networks for a carbon-neutral future using predictive AI models.",
+      "content": "<p>Sustainability is no longer a choice; it is a business imperative. AI allows us to optimize routes, reduce waste, and predict demand with unprecedented accuracy.</p><h3>Green Logistics</h3><p>By analyzing historical data, our AI models can suggest shipping routes that minimize fuel consumption. This not only saves cost but significantly reduces the carbon footprint.</p>"
+    },
+    {
+      "id": 3,
+      "title": "Digital Twins Explained",
+      "date": "Sep 28, 2025",
+      "category": "Innovation",
+      "image": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
+      ],
+      "excerpt": "A deep dive into digital twin technology and how it simulates real-world performance.",
+      "content": "<p>A Digital Twin is a virtual replica of a physical object or system. It spans the object's lifecycle, updated from real-time data, and uses simulation, machine learning, and reasoning to help decision-making.</p><h3>Benefits</h3><ul><li>Predictive Maintenance</li><li>Remote Monitoring</li><li>Improved Production Quality</li></ul>"
+    },
+    {
+      "id": 4,
+      "title": "",
+      "date": "Sep 28, 2025",
+      "category": "Innovation",
+      "image": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
+      ],
+      "excerpt": "A deep dive into digital twin technology and how it simulates real-world performance.",
+      "content": "<p>A Digital Twin is a virtual replica of a physical object or system. It spans the object's lifecycle, updated from real-time data, and uses simulation, machine learning, and reasoning to help decision-making.</p><h3>Benefits</h3><ul><li>Predictive Maintenance</li><li>Remote Monitoring</li><li>Improved Production Quality</li></ul>"
+    },
+    {
+      "id": 5,
+      "title": "",
+      "date": "Sep 28, 2025",
+      "category": "Innovation",
+      "image": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80"
+      ],
+      "excerpt": "     Your Digital Thread is Flying Blind: How Integrating the 'Voice of Customer' Prevents Critical Failures",
+      "content": [
+        "<h3>Meta Description</h3>",
+        "<p> Discover why your Digital Thread is incomplete without the Voice of Customer (VoC). Learn a 5-step framework to integrate field data into your PLM system, turning customer pain points into competitive advantages.</p><br><p>Executive Summary</p>",
+        "<br><p>A minor component failure on a piece of farm equipment recently highlighted a multi-million dollar blind spot I see in many manufacturing enterprises. While companies invest heavily in a \"Digital Thread\" to connect data from design to production, they often miss the most critical data stream: the authentic, ",
+        "unfiltered Voice of the Customer (VoC) from the field. This disconnect means engineering teams are guessing at what to improve, leading to wasted resources, vulnerable brand reputation, and lost market share.",
+        " This article outlines the strategic imperative for integrating VoC into your Digital Thread and provides a practical framework to make it happen, ensuring your next product innovation is driven by real-world customer needs.",
+        "<h3>The Broken Link in Your Product Strategy</h3>",
+        "<p>Discover why your Digital Thread is incomplete without the Voice of Customer (VoC). Learn a 5-step framework to integrate field data into your PLM system, turning customer pain points into competitive advantages.</p>",
+        "<h3>Benefits</h3>",
+        "<ul><li>Predictive Maintenance</li><li>Remote Monitoring</li><li>Improved Production Quality</li></ul>"
+      ]
+    }
+  ]
+}
