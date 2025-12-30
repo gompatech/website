@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: black; 
+            overflow: hidden; 
+            height: 100vh; 
+            width: 100vw; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        video { 
+            width: 100vw; 
+            height: 100vh; 
+            max-width: 100vw; 
+            max-height: 100vh;
+            object-fit: contain;  /* Fits entire video without cropping */
+            display: block; 
+        }
+        /* Hide native controls completely */
+        video::-webkit-media-controls { display: none !important; }
+        video::-webkit-media-controls-enclosure { display: none !important; }
+        video::-webkit-media-controls-panel { display: none !important; }
+        video::-webkit-media-text-track-display { display: none !important; }
+        video::-moz-media-controls { display: none !important; }
+        video { pointer-events: none; }
+        
+        /* Responsive adjustments for mobile */
+        @media (max-width: 768px) {
+            video { width: 100vw; height: 100vh; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onkeydown="return false;" onselectstart="return false;">
+    <video id="video" 
+           autoplay 
+           muted 
+           loop 
+           playsinline 
+           controlslist="nodownload nofullscreen noremoteplayback">
+        <source src="melteyedemo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <script>
+        const video = document.getElementById('video');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            video.play().catch(e => console.log('Autoplay prevented:', e));
+            // Fullscreen request (may need user gesture)
+            if (video.requestFullscreen) {
+                video.requestFullscreen().catch(e => console.log('Fullscreen prevented:', e));
+            } else if (video.webkitEnterFullscreen) {
+                video.webkitEnterFullscreen();
+            }
+        });
+        
+        // Dynamic aspect ratio preservation after metadata loads
+        video.addEventListener('loadedmetadata', () => {
+            const container = document.body;
+            const videoRatio = video.videoWidth / video.videoHeight;
+            const containerRatio = container.clientWidth / container.clientHeight;
+            
+            if (videoRatio > containerRatio) {
+                video.style.width = '100vw';
+                video.style.height = 'auto';
+            } else {
+                video.style.height = '100vh';
+                video.style.width = 'auto';
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            video.style.width = '100vw';
+            video.style.height = '100vh';
+            video.style.objectFit = 'contain';
+        });
+        
+        // Existing protections
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'C') || e.key === 'F11') {
+                e.preventDefault();
+            }
+        }, true);
+    </script>
+</body>
+</html>
