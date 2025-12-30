@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GompaTech MeltEye - Phase 4 Demo</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-orange: #ffab40;
+            --border: 1px solid #333;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-main); height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        header { background: var(--card-bg); padding: 1rem 2rem; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+        .brand { font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
+        .confidential { color: var(--accent-red); border: 1px solid var(--accent-red); padding: 0.2rem 0.5rem; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; border-radius: 4px; }
+        .subheader { text-align: center; background: #000; color: var(--text-muted); padding: 0.5rem; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* ALERT PANE */
+        #alert-pane {
+            height: 0;
+            background-color: var(--accent-red);
+            color: white;
+            text-align: center;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        #alert-pane.active { height: 60px; }
+
+        /* MAIN GRID */
+        .container { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; padding: 20px; flex-grow: 1; }
+        
+        .pane { background: var(--card-bg); border: var(--border); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; }
+
+        /* VIDEO PANE */
+        .video-container { background: black; width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; color: #555; position: relative; border-radius: 4px; overflow: hidden; }
+        .video-overlay { position: absolute; top: 10px; left: 10px; color: var(--accent-red); font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.7); padding: 2px 5px; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-family: var(--font-main); transition: 0.2s; }
+        .btn-upload { background: #333; color: var(--text-muted); }
+        .btn-monitor { background: var(--accent-green); color: black; flex-grow: 1; }
+        .btn-monitor:hover { opacity: 0.9; }
+
+        /* CHECKLIST PANE */
+        .furnace-header { border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { background: #333; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; color: var(--accent-green); }
+
+        .checklist-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
+        .icon-box { width: 30px; display: flex; justify-content: center; margin-right: 10px; font-size: 1.2rem; }
+        .label { flex-grow: 1; font-weight: 500; }
+        .timestamp { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); }
+
+        /* STATES */
+        .state-pending .icon-box { color: #555; }
+        .state-done .icon-box { color: var(--accent-green); }
+        .state-active .icon-box { color: var(--accent-orange); animation: pulse 1s infinite; }
+        .state-alert .icon-box { color: var(--accent-red); }
+        .state-alert .timestamp { color: var(--accent-red); font-weight: bold; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 1rem; color: #555; font-size: 0.8rem; border-top: var(--border); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">GompaTech <span style="color:var(--accent-orange)">MeltEye</span></div>
+        <div class="confidential">Confidential</div>
+    </header>
+    <div class="subheader">Melt Fast. Pour Fast. Minimize Defects.</div>
+
+    <div id="alert-pane">⚠ ALERT: SOP SEQUENCE VIOLATION DETECTED</div>
+
+    <div class="container">
+        <div class="pane">
+            <div class="video-container">
+                <div class="video-overlay">● LIVE FEED</div>
+                <video id="demoVideo" muted loop>
+                    <!-- <source src="foundry_sample.mp4" type="video/mp4"> -->
+                    <!-- <source src="./tempCheck_bathSample.MOV" type="video/mp4"> -->
+                    <source src="./demo_vid.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+            </div>
+            <div class="controls">
+                <button class="btn-upload">Upload Stream</button>
+                <button class="btn-monitor" onclick="startDemo()">▶ Start Compliance Monitor</button>
+            </div>
+        </div>
+
+        <div class="pane">
+            <div class="furnace-header">
+                <h3>Furnace 5</h3>
+                <span class="status-badge">ONLINE</span>
+            </div>
+
+            <!-- <div class="checklist-item state-done" id="row-0">
+                <div class="icon-box">✓</div>
+                <div class="label">Charging Start</div>
+                <div class="timestamp">14:02:10</div>
+            </div> -->
+
+            <div class="checklist-item state-pending" id="row-0">
+                <div class="icon-box">○</div>
+                <div class="label">Charging Start</div>
+                <div class="timestamp">Pending</div>
+            </div>
+
+            <div class="checklist-item state-pending" id="row-1">
+                <div class="icon-box">○</div>
+                <div class="label">Deslagging</div>
+                <div class="timestamp">Pending</div>
+            </div>
+
+            <div class="checklist-item state-pending" id="row-2">
+                <div class="icon-box">○</div>
+                <div class="label">Bath Sample</div>
+                <div class="timestamp">Pending</div>
+            </div>
+
+            <div class="checklist-item state-pending" id="row-3">
+                <div class="icon-box">○</div>
+                <div class="label">Temperature Check</div>
+                <div class="timestamp">Pending</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        GompaTech Confidential | All Rights Reserved © 2026
+    </footer>
+
+    <script>
+        function startDemo() {
+            const video = document.getElementById('demoVideo');
+            const row0 = document.getElementById('row-0');
+            const row1 = document.getElementById('row-1');
+            const row2 = document.getElementById('row-2');
+            const alertPane = document.getElementById('alert-pane');
+            
+            // 1. Play Video
+            video.play();
+
+            row0.className = 'checklist-item state-active';
+            row0.querySelector('.icon-box').innerText = '⟳'; // Loading symbol
+            row0.querySelector('.timestamp').innerText = 'Scanning...';
+
+            // 1.1 custom code sds
+            setTimeout(() => {
+                row0.className = 'checklist-item state-done';
+                row0.querySelector('.icon-box').innerText = '✓'; // Loading symbol
+                row0.querySelector('.timestamp').innerText = '14:02:10';
+                row1.className = 'checklist-item state-active';
+                row1.querySelector('.icon-box').innerText = '⟳'; // Loading symbol
+                row1.querySelector('.timestamp').innerText = 'Scanning...';
+            }, 5000);
+
+            // 2. Set "Deslagging" to Active/Scanning state
+            // row1.className = 'checklist-item state-active';
+            // row1.querySelector('.icon-box').innerText = '⟳'; // Loading symbol
+            // row1.querySelector('.timestamp').innerText = 'Scanning...';
+
+            // 3. Simulate Logic Engine "Thinking" (3 seconds delay)
+            setTimeout(() => {
+                // TRIGGER ALERT
+                row1.className = 'checklist-item state-alert';
+                row1.querySelector('.icon-box').innerText = '⚠';
+                row1.querySelector('.timestamp').innerText = 'OVERDUE';
+
+                row2.className = 'checklist-item state-done';
+                row2.querySelector('.icon-box').innerText = '✓'; // Loading symbol
+                row2.querySelector('.timestamp').innerText = '14:02:35';
+                
+                // Show Alert Banner
+                alertPane.classList.add('active');
+                
+                // Pause video to highlight the moment
+                video.pause();
+                
+            }, 25000); 
+        }
+    </script>
+</body>
+</html>
