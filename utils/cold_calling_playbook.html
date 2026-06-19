@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GompaTech Teamcenter Outreach Process</title>
+    <!-- Tailwind CSS for modern layout design -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        /* Interactive Step Highlighting */
+        .flow-step { transition: all 0.2s ease-in-out; cursor: pointer; }
+        .flow-step:hover { border-color: #10b981; background-color: #f0fdf4; transform: translateY(-2px); }
+        .flow-step.active { border-color: #10b981; background-color: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
+        
+        /* Persistent Scrollbar Track Style for Dense Content panes */
+        .scrollable-pane { overflow-y: auto; scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; }
+        .scrollable-pane::-webkit-scrollbar { width: 6px; }
+        .scrollable-pane::-webkit-scrollbar-track { background: #f1f5f9; }
+        .scrollable-pane::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- Top Navigation Command Header -->
+    <header class="bg-slate-900 text-white px-8 py-5 border-b border-slate-800 flex flex-col md:flex-row justify-between items-center shrink-0">
+        <div>
+            <h1 class="text-2xl font-black tracking-tight text-emerald-400"> GOMPATECH OUTREACH PROCESS</h1>
+            <p class="text-sm font-mono text-slate-400">Focus: Teamcenter PLM | Track: 10-14 Hours/Week Part-Time Solo Execution</p>
+        </div>
+        <!-- Baseline Volume Expectations -->
+        <div class="flex gap-6 mt-4 md:mt-0 text-center font-mono">
+            <div class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg">
+                <span class="block text-xs text-slate-400 uppercase tracking-wider font-bold">Weekly Goal</span>
+                <span class="text-xl font-extrabold text-white">10 Companies</span>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg">
+                <span class="block text-xs text-slate-400 uppercase tracking-wider font-bold">Contacts/Co.</span>
+                <span class="text-xl font-extrabold text-white">2 - 5 Leads</span>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg">
+                <span class="block text-xs text-slate-400 uppercase tracking-wider font-bold">Calls Window</span>
+                <span class="text-xl font-extrabold text-emerald-400">5 / Day</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Core 3-Pane Workspace Container -->
+    <div class="flex-1 flex overflow-hidden min-h-0">
+        
+        <!-- PANE 1 (LEFT): "WHAT" TO DO & GOTCHAS -->
+        <aside id="left-pane" class="w-1/4 bg-white border-r border-slate-200 p-6 flex flex-col h-full overflow-hidden">
+            <h2 class="text-xs uppercase tracking-wider font-black text-slate-400 border-b border-slate-100 pb-3 shrink-0">📋 STRATEGY &amp; GOTCHAS ("WHAT")</h2>
+            <div id="left-pane-content" class="flex-1 scrollable-pane pr-2 mt-4 space-y-5 text-base leading-relaxed">
+                <!-- Injected dynamically via script -->
+            </div>
+        </aside>
+
+        <!-- PANE 2 (MIDDLE): INTERACTIVE FLOWCHART DIAGRAM -->
+        <main class="w-2/5 bg-slate-50 p-6 flex flex-col h-full overflow-hidden items-center">
+            <h2 class="text-xs uppercase tracking-wider font-black text-slate-400 mb-6 shrink-0">⚙️ OUTREACH PIPELINE EXECUTION MAP</h2>
+            
+            <div class="flex-1 w-full flex flex-col justify-between items-center max-w-sm py-4">
+                
+                <!-- STEP 1 CONTAINER -->
+                <div id="step1" onclick="activateStep('step1')" class="flow-step active w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center font-black text-white text-lg">1</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Find Companies</h3>
+                        <p class="text-xs text-slate-500 font-medium">Isolate high-intent organizations.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 2 CONTAINER -->
+                <div id="step2" onclick="activateStep('step2')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">2</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Find Contacts</h3>
+                        <p class="text-xs text-slate-500 font-medium">Extract decision maker profiles.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 3 CONTAINER -->
+                <div id="step3" onclick="activateStep('step3')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">3</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Find Emails</h3>
+                        <p class="text-xs text-slate-500 font-medium">Harvest raw point data locations.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 4 CONTAINER -->
+                <div id="step4" onclick="activateStep('step4')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">4</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Verify Emails</h3>
+                        <p class="text-xs text-slate-500 font-medium">Sanitize data lists for bounce safety.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 5 CONTAINER -->
+                <div id="step5" onclick="activateStep('step5')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">5</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Send Outreach</h3>
+                        <p class="text-xs text-slate-500 font-medium">Deploy authority text frameworks.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 6 CONTAINER -->
+                <div id="step6" onclick="activateStep('step6')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">6</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Follow-up &amp; Call</h3>
+                        <p class="text-xs text-slate-500 font-medium">Run multi-channel velocity patterns.</p>
+                    </div>
+                </div>
+
+                <div class="text-slate-300 font-bold text-lg select-none">↓</div>
+
+                <!-- STEP 7 CONTAINER -->
+                <div id="step7" onclick="activateStep('step7')" class="flow-step w-full p-5 bg-white border-2 border-slate-200 rounded-xl flex items-center gap-4 shadow-xs">
+                    <div class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center font-black text-white text-lg">7</div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900 tracking-tight uppercase">Discovery Call</h3>
+                        <p class="text-xs text-slate-500 font-medium">Isolate architectural pain, land client.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- PANE 3 (RIGHT): ACTION RUNBOOK ("HOW") -->
+        <section id="right-pane" class="w-7/20 bg-white border-l border-slate-200 p-6 flex flex-col h-full overflow-hidden">
+            <h2 class="text-xs uppercase tracking-wider font-black text-slate-400 border-b border-slate-100 pb-3 shrink-0">🛠️ EXECUTION PLAYBOOK ("HOW")</h2>
+            <div id="right-pane-content" class="flex-1 scrollable-pane pr-2 mt-4 space-y-5 text-base leading-relaxed">
+                <!-- Injected dynamically via script -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Data Engine Injector and UI Controller States Logic Script -->
+    <script>
+        const stepData = {
+            step1: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Locate manufacturing or engineering firms utilizing <strong>Teamcenter PLM</strong> that fall squarely inside your boutique ideal customer parameter limits.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Do not go after companies that already run internal offshore operations exceeding 100+ seats. They build capabilities internally. Avoid massive defense primes like <strong>Boeing</strong>, <strong>Lockheed Martin</strong>, or <strong>Caterpillar</strong> early on due to highly restrictive, lengthy procurement loops.
+                    </div>
+
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 text-sm text-slate-700 mt-4 space-y-2">
+                        <strong class="text-emerald-900 block font-bold">Ideal Score System Signals:</strong>
+                        <p>• Active Tech Job Posting: <strong>+10 points</strong></p>
+                        <p>• Small India Captive (2-20 resources): <strong>+7 points</strong></p>
+                        <p>• Recent Merger/Acquisition Activity: <strong>+8 points</strong></p>
+                        <p>• Massive Offshore Team (>100): <strong>-10 points</strong></p>
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">Targeting Strategy Matrix</p>
+                    <p class="text-sm text-slate-500 mb-4">Run these options using completely free tools to locate your initial base of 10 qualified target companies.</p>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold uppercase text-emerald-700 tracking-wider block mb-1">Option A: High-Intent Job Mining (Strongest)</span>
+                            <p class="text-sm">Search <strong>Google Jobs</strong> or <strong>Indeed</strong> or <strong>LinkedIn</strong> directly for active job titles. This indicates immediate budget and active structural bottlenecks.</p>
+                            <div class="bg-slate-900 text-slate-200 p-2.5 font-mono text-xs rounded-md mt-2">
+                                "Teamcenter Architect" OR "Teamcenter Developer" OR "Teamcenter Administrator"
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider block mb-1">Option B: Footprint Intelligence</span>
+                            <p class="text-sm">Search Google for published conference material or whitepapers detailing deployments from key events like <strong>Realize LIVE</strong> or <strong>PLM World</strong>.</p>
+                            <div class="bg-slate-900 text-slate-200 p-2.5 font-mono text-xs rounded-md mt-2">
+                                site:siemens.com [Industry Segment] "Teamcenter" filetype:pdf
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider block mb-1">Target Filters Checklist</span>
+                            <p class="text-sm text-slate-600 font-medium mt-1">
+                                • Revenue: <strong>$100M - $5B</strong><br>
+                                • Employees: <strong>500 - 10,000</strong><br>
+                                • Industries: <strong>Aerospace Suppliers, Automotive Tier-1, EV, Industrial Equipment, Defense Suppliers, Medical Devices, Oil &amp; Gas Equipment</strong>.
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            step2: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Identify exactly <strong>2-5 technical decision-makers</strong> within each verified target company. Diversifying your contact footprint ensures your outreach doesn't hit a single dead end.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Do not waste time reaching out to generic HR personnel, corporate recruiters, or broad corporate IT Directors who do not own the engineering software stack configuration lines. Stick entirely to engineering infrastructure leadership.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">Target Persona Directory</p>
+                    <p class="text-sm text-slate-500 mb-4">Search for the following explicit text strings using <strong>Apollo.io Free Tier</strong> filters or <strong>LinkedIn Search</strong>:</p>
+                    
+                    <div class="space-y-3 font-mono text-sm text-slate-800">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 font-sans">
+                            <strong class="block text-slate-900 text-xs uppercase tracking-wider font-bold mb-1">Primary Targets</strong>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700 text-sm">
+                                <li><strong>PLM Manager / Director of PLM</strong></li>
+                                <li><strong>Director of Engineering Systems</strong></li>
+                                <li><strong>Engineering Systems Manager</strong></li>
+                                <li><strong>Digital Engineering Manager</strong></li>
+                                <li><strong>VP of Engineering / Product Development</strong></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 font-sans">
+                            <strong class="block text-slate-900 text-xs uppercase tracking-wider font-bold mb-1">LinkedIn Filtering Query Template</strong>
+                            <p class="text-xs text-slate-600 mb-1">Paste this exact layout structure into your query parameters browser bar:</p>
+                            <div class="bg-slate-900 text-slate-100 p-2 font-mono text-xs rounded">
+                                [Company Name] AND ("PLM" OR "Teamcenter" OR "Engineering Systems")
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            step3: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Uncover the direct corporate email addresses of your selected 2-5 technical decision makers without incurring technical subscription bills.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Never scrape or use personal addresses like @gmail.com or @yahoo.com. Your business messaging must be routed strictly B2B to institutional target corporate mailboxes to preserve conversion authority.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">Zero-Cost Email Location Framework</p>
+                    
+                    <div class="space-y-4 mt-3">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold uppercase text-emerald-700 tracking-wider block mb-1">Option A: Apollo.io Free Tier</span>
+                            <p class="text-sm">Utilize the basic free account credits allocation on <strong>Apollo.io</strong> to directly reveal corporate email locations based on your LinkedIn lead targets.</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold uppercase text-slate-500 tracking-wider block mb-1">Option B: Hunter.io Domain Architecture Synthesizer</span>
+                            <p class="text-sm">If a lead is unavailable on Apollo, pass the target company domain suffix into <strong>Hunter.io</strong> (Free tier check tool) to find the default naming structure pattern.</p>
+                            <div class="bg-slate-900 text-slate-200 p-2 font-mono text-xs rounded-md mt-2">
+                                Example syntax match output: {first}.{last}@targetco.com
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            step4: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Ensure that harvested email data files are completely legitimate and actively functional before firing single outreach sequences.</p>
+                    
+                    <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 text-sm text-rose-900 mt-4">
+                        <strong class="block mb-1">🛑 Critical Domain Safety Rule:</strong>
+                        Because you are operating on a free <strong>Zoho email account</strong> tied directly to your domain space, your system tolerance for bounced mail tracking is near zero. If your bounce rates climb above 2%, major filters (Google/Microsoft Workspace engines) will permanently flag your corporate domain as toxic spam.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">List Cleansing Operations</p>
+                    
+                    <div class="space-y-4 mt-3 text-sm">
+                        <p><strong>Step 1: Check Verification Flags Inside Apollo</strong><br>Prioritize downloading email contacts that display a green verified status check directly within the <strong>Apollo.io</strong> lead management platform layout interface.</p>
+                        
+                        <p><strong>Step 2: Utilize Free Verification Services</strong><br>For any emails marked as risky or manually derived via syntax guessing patterns, push the contact points through free credit allocation balances on verification tools like <strong>NeverBounce</strong>, <strong>ZeroBounce</strong>, or <strong>Bouncer</strong>.</p>
+                        
+                        <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs text-slate-700">
+                            <strong>Rule of Thumb:</strong> If an email returns as "Catch-All" or "Unverifiable", delete the profile entirely from your outreach tracker. It is not worth risking your <strong>Zoho</strong> configuration domain equity.
+                        </div>
+                    </div>
+                `
+            },
+            step5: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Deliver hyper-brief, high-authority engineering messages that focus entirely on high-value corporate pain points rather than hourly rates.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Do not pitch low-cost labor arbitrage or frame yourself as basic offshore staff reinforcement. Position yourself clearly on senior domain expertise. Never write long-winded paragraphs. Keep everything completely under 120 words.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">High-Intent Messaging Master Template</p>
+                    <p class="text-sm text-slate-500 mb-3">Copy this precise template, swapping components inside structural tags:</p>
+                    
+                    <div class="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs space-y-2 select-all">
+                        <p class="text-slate-400 font-bold">// INITIAL OUTREACH SCRIPT</p>
+                        <p><strong>Subject:</strong> Stalled Teamcenter upgrades at {{Company}}?</p>
+                        <br>
+                        <p>Hi {{First Name}},</p>
+                        <p>I noticed {{Company}} is scaling your Teamcenter infrastructure operations. Finding senior PLM architecture talent that understands complex global engineering configurations without typical big-agency friction is incredibly tough right now.</p>
+                        <p>I'm a former US-based engineering lead (20+ years hands-on manufacturing systems expert) running a boutique PLM consultancy. We stabilize complex migrations and step in to bridge tactical engineering expertise shortages.</p>
+                        <p>Does it make sense to explore a brief, 10-minute introductory sync this coming Thursday?</p>
+                        <br>
+                        <p>Best,</p>
+                        <p>Siddharth Solanki</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs mt-3">
+                        <strong>Why This Works:</strong> It highlights your <strong>20+ years of US-grade domain experience</strong> up front, anchors onto a burning problem (hiring shortage/stalled upgrade), and uses a low-friction 10-minute call invitation.
+                    </div>
+                `
+            },
+            step6: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Systematically nudge contacts who did not respond to your initial message across multiple channels, combining cold emails with highly focused, brief calling loops.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Do not make phone calls using an Indian cellular roaming mobile signature line. US manufacturing executives will ignore international phone prefixes or carrier spam flags automatically.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">Multi-Channel Follow-Up Architecture</p>
+                    
+                    <div class="space-y-4 text-sm mt-2">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold block text-slate-900 text-xs">The Structured Touch Timeline:</span>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
+                                <li><strong>Day 1:</strong> Initial cold email via your <strong>Zoho domain</strong>.</li>
+                                <li><strong>Day 4:</strong> Quick reply on top of original email thread.</li>
+                                <li><strong>Day 5:</strong> Send a <strong>LinkedIn</strong> connect request (No hard pitch).</li>
+                                <li><strong>Day 5:</strong> First cold call via <strong>Skype Outbound / OpenPhone</strong>.</li>
+                                <li><strong>Day 10:</strong> Email Follow-up #2 targeting CAD schema bottlenecks.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                            <span class="font-bold text-xs uppercase tracking-wider text-emerald-900 block">☎️ Cold Call Execution Script</span>
+                            <p class="text-xs text-slate-700">Set up a US-localized virtual phone number using <strong>Skype</strong> or <strong>OpenPhone</strong>. Dial targets during their local corporate windows (typically between 6:30 PM - 7:30 PM IST). Keep your pitch well under 45 seconds:</p>
+                            <div class="bg-white p-3 rounded border border-emerald-100 font-mono text-xs text-slate-800 italic select-all">
+                                "Hi [Name], this is Siddharth from GompaTech. I saw your engineering systems group has been looking for structural Teamcenter support. I spent 15 years engineering complex applications in the US, so I know exactly how costly a PLM roadmap delay can get when talent is tight. I'm not looking to pitch software licenses; I just wanted to see if it makes sense to connect for 10 minutes to share how we keep deployments on schedule?"
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            step7: {
+                what: `
+                    <p class="font-bold text-lg text-slate-900">Objective</p>
+                    <p>Convert your brief, scheduled 15-minute introductory meeting slot into a formal consulting engagement opportunity by diagnosing severe system pain points.</p>
+                    
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 mt-4">
+                        <strong class="block mb-1">⚠️ Crucial Gotcha:</strong>
+                        Do not present slide decks, lecture, or dive into complex architectural programming methodologies during this call. Your primary goal is to encourage the prospect to do 80% of the talking.
+                    </div>
+                `,
+                how: `
+                    <p class="font-bold text-lg text-slate-900">Introductory Call Agenda & Focus</p>
+                    
+                    <div class="space-y-3 text-sm mt-2">
+                        <p><strong>1. Ask Targeted Questions:</strong><br>Pivot quickly to understanding their current state infrastructure: <em>"How long has this specific Teamcenter version update been delayed?"</em> or <em>"What is the immediate impact on your product launch timelines if this resource gap persists?"</em></p>
+                        
+                        <p><strong>2. Anchor on Business Value:</strong><br>Continuously connect your technical expertise directly back to tangible business impacts like resource scarcity mitigation, engineering release speed, and data architecture stabilization.</p>
+                        
+                        <p><strong>3. Secure the Next Structural Milestone:</strong><br>Never send a generic pricing proposal template blindly. End the conversation by securing a concrete follow-up date for a formal system review and solution scoping session.</p>
+                    </div>
+                `
+            }
+        };
+
+        function activateStep(stepId) {
+            // Remove active style states from all flowchart step elements
+            document.querySelectorAll('.flow-step').forEach(step => {
+                step.classList.remove('active');
+                // Revert background layer accents for inactive steps
+                const badge = step.querySelector('div');
+                if (badge && badge.classList.contains('bg-emerald-500')) {
+                    badge.classList.remove('bg-emerald-500');
+                    badge.classList.add('bg-slate-700');
+                }
+            });
+
+            // Add active visual indicator states to the selected step card
+            const selectedStep = document.getElementById(stepId);
+            selectedStep.classList.add('active');
+            
+            // Adjust current badge coloring to standard active emerald green layout style
+            const activeBadge = selectedStep.querySelector('div');
+            if (activeBadge) {
+                activeBadge.classList.remove('bg-slate-700');
+                activeBadge.classList.add('bg-emerald-500');
+            }
+
+            // Sync left and right panes with updated target step contents
+            document.getElementById('left-pane-content').innerHTML = stepData[stepId].what;
+            document.getElementById('right-pane-content').innerHTML = stepData[stepId].how;
+            
+            // Reset panel scroll locations back up to zero index bounds automatically
+            document.getElementById('left-pane-content').scrollTop = 0;
+            document.getElementById('right-pane-content').scrollTop = 0;
+        }
+
+        // Initialize display configuration state using Step 1 target baseline payload on index startup load
+        window.onload = () => {
+            activateStep('step1');
+        };
+    </script>
+</body>
+</html>
