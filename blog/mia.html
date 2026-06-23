@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlocking Compliance: The Digital Backbone behind "Made in America" | gPLM Blog</title>
+    <style>
+        :root {
+            --primary-color: #0a2240;
+            --secondary-color: #1e73be;
+            --accent-color: #f9bc0b;
+            --text-color: #333;
+            --light-bg: #f5f8fa;
+            --white: #ffffff;
+            --primary-blue: #1a4b8c;
+            --light-blue: #2c6bbd;
+            --dark-blue: #0d2a52;
+            --accent-green: #2ecc71;
+            --dark-green: #27ae60;
+            --base-grey: #f4f6f8;
+            --dark-grey: #2c3e50;
+            --light-grey: #ecf0f1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: var(--white);
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .banner {
+            margin-top: 80px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 60px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-image: linear-gradient(rgba(10, 34, 64, 0.85), rgba(10, 34, 64, 0.85)), url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .banner h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .banner p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .blog-content {
+            padding: 40px 0;
+        }
+        
+        .blog-post {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .blog-post h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .blog-post h3 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+        
+        .blog-meta {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .blog-meta span {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .blog-meta i {
+            margin-right: 5px;
+        }
+        
+        .blog-post p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .blog-post ul, .blog-post ol {
+            margin-bottom: 20px;
+            padding-left: 40px;
+        }
+        
+        .blog-post li {
+            margin-bottom: 10px;
+        }
+        
+        .blog-post strong {
+            color: var(--primary-color);
+        }
+        
+        .quote {
+            background-color: var(--light-bg);
+            border-left: 4px solid var(--secondary-color);
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+        
+        .cta-section {
+            background-color: var(--primary-color);
+            color: var(--white);
+            /* text-align: center; */
+            text-align: left    ;
+            padding: 60px 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        
+        .cta-section h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .cta-section p {
+            margin-bottom: 30px;
+            font-size: 18px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .form-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-container h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .required {
+                color: red;
+        }
+
+        .submit-button {
+            background-color: var(--accent-green);
+            color: var(--white);
+            /* color: var(--text-color); */
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--dark-green);
+        }
+        
+        .made-in-america {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            flex: 1;
+            margin-right: 30px;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .footer-section {
+                flex: 100%;
+                margin-right: 0;
+            }
+            
+            .blog-post {
+                padding: 25px;
+            }
+            
+            .banner h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">gPLM Blog</a>
+            <nav>
+                <ul>
+                    <li><a href="https://gplm.gompatech.com">Home</a></li>
+                    <li><a href="https://blogs.gompatech.com">Blog</a></li>
+                    <li><a href="https://gplm.gompatech.com/#services">Solutions</a></li>
+                    <!-- <li><a href="#">Resources</a></li> -->
+                    <li><a href="#cta-section">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="banner">
+            <h1>Unlocking Compliance: The Digital Backbone behind "Made in America"</h1>
+            <p>How modern manufacturing systems enable regulatory compliance and supply chain transparency</p>
+        </div>
+
+        <div class="blog-content">
+            <div class="blog-post">
+                <div class="blog-meta">
+                    <span><i>📅</i> April 27, 2025</span>
+                    <span><i>👤</i> By Siddharth Solanki</span>
+                    <span><i>🏷️</i> Engineering Leadership, Compliance, Manufacturing</span>
+                    <span><i>👥</i> Target Audience: VP of Engineering, Engineering Director</span>
+                </div>
+
+                <p>The ground beneath the manufacturing landscape is shifting. Regulations like "Made in America" and the "Build America, Buy America" (BABA) Act aren't just policy papers; they are fundamental changes impacting how we design, source, and build the critical engineering product solutions – that our customers rely on and that have made us an industry leader.</p>
+                
+                <p>Compliance isn't optional; it's essential for market access, customer trust, and maintaining the competitive edge. As an example, while working for a major pipeline solutions OEM in Tulsa, we were bidding for a federally funded project. Federal contractors for such projects may be required to prove the US-manufacturing location of the steel used per executive order on Strengthening Buy-American Preferences for Infrastructure Projects, specifically Sec. 3:</p>
+                
+                <div class="quote">
+                    "to the extent consistent with law, encourage recipients of new Federal financial assistance awards pursuant to a covered program to use, to the greatest extent practicable, iron and aluminum as well as steel, cement, and other manufactured products produced in the United States in every contract, subcontract, purchase order, or sub‑award that is chargeable against such Federal financial assistance award."
+                </div>
+                
+                <p>To the solutions architect in me, this compliance problem translated into a traceability problem, and information systems were the obvious answer. How can our PLM, ERP, SCM, and related systems empower us not just to claim compliance, but to prove it, efficiently and accurately?</p>
+                
+                <p>Simply put, we need granular, reliable, and accessible data. Gut feelings or historical assumptions about our supply chain won't cut it anymore.</p>
+
+                <h3>Here's the kind of information engineers need readily available from our digital backbone:</h3>
+                
+                <h3>1. From our Product Lifecycle Management (PLM) System:</h3>
+                <ul>
+                    <li><strong>Granular Bill of Materials (BOM) Data:</strong> We need BOMs that don't just list parts, but link directly to approved manufacturers and, critically, their manufacturing locations.</li>
+                    <li><strong>Component & Material Specifications:</strong> Clear documentation specifying required material origins (e.g., US-origin steel) where applicable within the design itself.</li>
+                    <li><strong>Approved Manufacturer List (AML) / Approved Vendor List (AVL) Integration:</strong> Which suppliers are approved to make specific components, and where are their certified manufacturing sites located? This needs to be tied directly to the component record.</li>
+                    <li><strong>Revision Control Traceability:</strong> How has the sourcing or material specification for a component changed over time? We need to know the compliance status for products built before and after specific changes.</li>
+                </ul>
+                
+                <h3>2. From our Enterprise Resource Planning (ERP) & Supply Chain Management (SCM) Systems:</h3>
+                <ul>
+                    <li><strong>Verified Supplier Country of Origin (CoO):</strong> Not just the supplier's headquarters address, but the specific CoO for the parts they supply us. This needs to be a mandatory, audited field in our supplier master data and purchase orders.</li>
+                    <li><strong>Purchase Order History & Traceability:</strong> For a specific batch of finished goods, can we trace exactly which purchase orders fulfilled the component requirements and their stated CoO?</li>
+                    <li><strong>Manufacturing Location Data:</strong> Where was the final assembly or significant transformation of our product conducted? For multi-site companies, this is crucial. Was it performed in a US facility?</li>
+                    <li><strong>Cost Data Breakdown:</strong> BABA often involves calculating the percentage of component cost that is domestic. We need our ERP to accurately track material costs, link them to their CoO, and allow us to calculate this percentage reliably for different products or product lines.</li>
+                    <li><strong>Supplier Certifications:</strong> A repository or linked system to store and manage supplier affidavits, certifications of domestic content, or other required compliance documents. This needs to be easily linked back to the supplier and the parts they provide.</li>
+                    <li><strong>Inventory Segmentation (Potentially):</strong> Can we segment inventory based on CoO or compliance status if we have parallel sourcing (e.g., US-made vs. imported component X)?</li>
+                </ul>
+                
+                <h3>3. Connecting the Dots (Integration is Key):</h3>
+                <p>The real power comes when these systems talk seamlessly. I need to visualize the journey:</p>
+                <ul>
+                    <li>PLM defines the product structure and approved sources.</li>
+                    <li>ERP/SCM executes the sourcing, purchasing, and manufacturing based on that structure, capturing actual CoO, cost, and production location data.</li>
+                    <li>We need dashboards and reports that pull data from both systems to provide a holistic compliance view for a specific product, project, or customer order. Can we run a report today showing the calculated domestic content percentage for our top 10 products based on current purchasing data?</li>
+                </ul>
+                
+                <h3>The Challenge Ahead:</h3>
+                <p>Getting this data isn't just about flipping a switch. It likely means:</p>
+                <ul>
+                    <li><strong>Data Cleansing and Enrichment:</strong> Auditing and updating existing supplier and component records.</li>
+                    <li><strong>Process Changes:</strong> Enforcing new data entry requirements at the point of purchasing or supplier onboarding.</li>
+                    <li><strong>System Enhancements:</strong> Potentially configuring or customizing our PLM/ERP systems to better capture and report on this specific data.</li>
+                    <li><strong>Supplier Collaboration:</strong> Working closely with our supply chain partners to get accurate and timely information.</li>
+                </ul>
+                
+                <p>As engineers and leaders in the manufacturing industry, we thrive on precision and reliability. Applying that same rigor to our internal data management is now paramount. By demanding and leveraging the right information from our systems, we can confidently navigate these new regulations and continue to deliver the trusted solutions our industry depends on, built on a foundation of verifiable compliance.</p>
+            </div>
+
+            <div class="made-in-america">
+                <svg width="200" height="150" viewBox="0 0 200 150">
+                    <!-- American Flag -->
+                    <rect x="20" y="30" width="160" height="90" fill="#B22234" />
+                    
+                    <!-- White Stripes -->
+                    <rect x="20" y="37" width="160" height="6.92" fill="#FFFFFF" />
+                    <rect x="20" y="50.84" width="160" height="6.92" fill="#FFFFFF" />
+                    <rect x="20" y="64.68" width="160" height="6.92" fill="#FFFFFF" />
+                    <rect x="20" y="78.52" width="160" height="6.92" fill="#FFFFFF" />
+                    <rect x="20" y="92.36" width="160" height="6.92" fill="#FFFFFF" />
+                    <rect x="20" y="106.2" width="160" height="6.92" fill="#FFFFFF" />
+                    
+                    <!-- Blue Field -->
+                    <rect x="20" y="30" width="64" height="49" fill="#3C3B6E" />
+                    
+                    <!-- Stars (simplified) -->
+                    <g fill="#FFFFFF">
+                        <!-- Row 1 -->
+                        <circle cx="28" cy="35" r="2" />
+                        <circle cx="40" cy="35" r="2" />
+                        <circle cx="52" cy="35" r="2" />
+                        <circle cx="64" cy="35" r="2" />
+                        <circle cx="76" cy="35" r="2" />
+                        
+                        <!-- Row 2 -->
+                        <circle cx="34" cy="42" r="2" />
+                        <circle cx="46" cy="42" r="2" />
+                        <circle cx="58" cy="42" r="2" />
+                        <circle cx="70" cy="42" r="2" />
+                        
+                        <!-- Row 3 -->
+                        <circle cx="28" cy="49" r="2" />
+                        <circle cx="40" cy="49" r="2" />
+                        <circle cx="52" cy="49" r="2" />
+                        <circle cx="64" cy="49" r="2" />
+                        <circle cx="76" cy="49" r="2" />
+                        
+                        <!-- Row 4 -->
+                        <circle cx="34" cy="56" r="2" />
+                        <circle cx="46" cy="56" r="2" />
+                        <circle cx="58" cy="56" r="2" />
+                        <circle cx="70" cy="56" r="2" />
+                        
+                        <!-- Row 5 -->
+                        <circle cx="28" cy="63" r="2" />
+                        <circle cx="40" cy="63" r="2" />
+                        <circle cx="52" cy="63" r="2" />
+                        <circle cx="64" cy="63" r="2" />
+                        <circle cx="76" cy="63" r="2" />
+                    </g>
+                    
+                    <!-- Text overlay -->
+                    <text x="100" y="18" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#3C3B6E">MADE IN AMERICA</text>
+                </svg>
+            </div>
+
+            <div class="cta-section" id="cta-section">
+                <h3>Need Help Navigating Compliance Requirements?</h3>
+                <p>Our team of experts can help you implement the digital systems and processes needed to achieve and maintain "Made in America" compliance for your manufacturing operations.</p>
+                <div class="form-container">
+                    <h3>Get in Touch</h3>
+                    <form  action="https://formspree.io/f/mdkewzol"
+                        method="POST" id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Full Name<span class="required">*</span></label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address<span class="required">*</span></label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number<span class="required">*</span></label>
+                            <input type="tel" name="phone" id="phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input type="text" name="company" id="company" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Job Title</label>
+                            <input type="text" name="title" id="title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea name="message" name="message" id="message" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Schedule a Discovery Call</button>
+                    </form>
+                    <!-- <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <input type="text" id="company" class="form-control" placeholder="Enter your company name">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Your Role</label>
+                            <select id="role" class="form-control">
+                                <option value="">Select your role</option>
+                                <option value="VP Engineering">VP of Engineering</option>
+                                <option value="Engineering Director">Engineering Director</option>
+                                <option value="Supply Chain Manager">Supply Chain Manager</option>
+                                <option value="Compliance Officer">Compliance Officer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">How can we help?</label>
+                            <textarea id="message" class="form-control" rows="4" placeholder="Tell us about your compliance challenges"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-block">Submit</button>
+                    </form> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About gPLM</h3>
+                    <!-- <p>We provide innovative manufacturing solutions and systems integration to help businesses optimize operations, meet regulatory requirements, and achieve sustainable growth.</p> -->
+                    <p>We provide full spectrum of Product Lifecycle Management consulting and implementaion services, including integrations, data-migrations to/from other Enterprise systems to help businesses optimize operations, meet regulatory requirements, and achieve sustainable growth.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="https://gplm.gompatech.com">Home</a></li>
+                        <li><a href="#">Solutions</a></li>
+                        <!-- <li><a href="#">Resources</a></li> -->
+                        <li><a href="#">Blog</a></li>
+                        <!-- <li><a href="#">Contact</a></li> -->
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li>Email: team@gompatech.com</li>
+                        <li>Phone: (+1) 650-450-8263</li>
+                        <!-- <li>Address: 123 Manufacturing Way, Innovation Hub, USA</li> -->
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 gPLM by Gompatech. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

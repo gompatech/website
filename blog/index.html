@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GompaTech Insights - Engineering Technology Leadership Blog</title>
+    <style>
+        :root {
+            --primary: #1a5276;
+            --secondary: #2e86c1;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--primary);
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-left: 30px;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--dark);
+        }
+        
+        .nav-link:hover {
+            color: var(--accent);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--light);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+        
+        /* Experience Section */
+        .experience {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header h2 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            color: var(--dark-gray);
+        }
+        
+        .credentials {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .credential-item {
+            text-align: center;
+            margin: 20px;
+            width: 200px;
+        }
+        
+        .credential-icon {
+            font-size: 48px;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .credential-item h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .credential-item p {
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        /* Latest Blog Post */
+        .latest-post {
+            padding: 60px 0;
+        }
+        
+        .post-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        
+        .post-img {
+            height: 300px;
+            background-color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 1%;
+        }
+        
+        .post-content {
+            padding: 30px;
+        }
+        
+        .post-category {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--accent);
+            color: var(--white);
+            font-size: 14px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .post-content h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .post-content p {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--dark-gray);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            opacity: 0.5;
+        }
+        
+        /* Coming Soon */
+        .coming-soon {
+            padding: 60px 0;
+            background-color: var(--light-gray);
+            text-align: center;
+        }
+        
+        .topics-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .topic-badge {
+            background-color: var(--white);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 60px 0;
+            background-color: var(--white);
+        }
+        
+        .contact-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contact-info h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .contact-info p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .contact-form {
+            flex: 2;
+            min-width: 300px;
+            background-color: var(--light-gray);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn-submit {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            padding: 60px 0;
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .newsletter p {
+            margin-bottom: 30px;
+            font-size: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        
+        .newsletter-btn {
+            background-color: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 0 24px;
+            font-weight: 600;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-link {
+            margin-bottom: 10px;
+        }
+        
+        .footer-link a {
+            color: var(--light);
+            font-size: 14px;
+        }
+        
+        .footer-link a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background-color: var(--white);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .nav-item {
+                margin: 10px 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-input {
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            
+            .newsletter-btn {
+                border-radius: 4px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">Gompa<span>Tech</span> Insights</a>
+            <button class="mobile-menu-toggle">&#9776;</button>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="https://www.gompatech.com" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#latest" class="nav-link">Latest Insights</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Engineering Technology Leadership Insights</h1>
+            <p>Leverage our experience from Google to Boeing, from Silicon Valley to manufacturing plants. Get insider knowledge on PLM and Manufacturing Intelligence strategies that drive innovation and efficiency.</p>
+            <div>
+                <a href="#contact" class="btn btn-primary">Schedule a Consultation</a>
+                <a href="#latest" class="btn btn-outline">Read Latest Insight</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience">
+        <div class="container">
+            <div class="section-header">
+                <h2>Industry-Tested Expertise</h2>
+                <p>Our unique experience spans high-tech giants and industrial manufacturing</p>
+            </div>
+            <div class="credentials">
+                <div class="credential-item">
+                    <div class="credential-icon">🌐</div>
+                    <h3>Technology Leaders</h3>
+                    <p>Bringing technology expertise from tech leaders like Google</p>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-icon">✈️</div>
+                    <h3>Aerospace</h3>
+                    <p>We know the systems it takes to build a safe-machine</p>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-icon">🏭</div>
+                    <h3>Manufacturing</h3>
+                    <p>On-site implementation at plants across the US</p>
+                </div>
+                <div class="credential-item">
+                    <div class="credential-icon">🔧</div>
+                    <h3>Hands-On Technical</h3>
+                    <p>Not just strategy - we build what works</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Blog Post -->
+    <section id="latest" class="latest-post">
+        <div class="container">
+            <div class="section-header">
+                <h2>Latest Insight</h2>
+                <p>Our most recent engineering technology leadership perspective</p>
+            </div>
+            <div class="post-card">
+                <!-- <div class="post-img">🔍</div> -->
+                <div class="post-img"><img src="./images/def_mfg_plant.png" alt="Modern Defense Manufacturing Plant" class="blog-image"/></div>
+                <div class="post-content">
+                    <span class="post-category">Manufacturing Intelligence</span>
+                    <h3>Manufacturing Intelligence - in Defense Production</h3>
+                    <p>
+                        Being a more efficient and reliable manufacturer translates to better bottom lines and competitive advantage. When it comes to defense production, these advantages are increasingly becoming necessity and a matter of national security.
+                    </p>
+                    <p>
+                        This insight explores specific examples of Industry 4.0 technologies to the defense industry where manufacturing intelligence is quickly becoming a norm in driving measurable improvements in harnessing shop-floor efficiencies and reliability of production during war-time-preparedness.
+                    </p>
+                    <div class="post-meta">
+                        <span>May 7, 2025</span>
+                        <a href="https://blogs.gompatech.com/wartimemfg.html" class="btn btn-primary">Read Full Article</a>
+                    </div>
+                </div>
+                <div class="post-card">
+                    <div class="post-img">🔍</div>
+                    <div class="post-content">
+                        <span class="post-category">PLM Strategy</span>
+                        <h3>Made In America - The Compliance Challegne</h3>
+                        <p>
+                            Regulations like "Made in America" and the "Build America, Buy America" (BABA) Act aren't just policy papers; they are fundamental changes impacting how we design, source, and build the critical engineering product solutions
+                        </p>
+                        <p>
+                            This insight explores how systems help the complex challenge of Compliance - as necessiated by regulations like "Made In America".
+                        </p>
+                        <div class="post-meta">
+                            <span>May 2, 2025</span>
+                            <a href="https://blogs.gompatech.com/mia.html" class="btn btn-primary">Read Full Article</a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="coming-soon">
+        <div class="container">
+            <div class="section-header">
+                <h2>Coming Soon</h2>
+                <p>We're developing in-depth insights on these critical topics</p>
+            </div>
+            <div class="topics-list">
+                <span class="topic-badge">PLM Implementation ROI</span>
+                <span class="topic-badge">Engineering Change Management</span>
+                <span class="topic-badge">Digital Thread Implementation</span>
+                <span class="topic-badge">Aerospace Compliance</span>
+                <span class="topic-badge">Medical Device PLM</span>
+                <span class="topic-badge">EV Development Processes</span>
+                <span class="topic-badge">Manufacturing Digital Transformation</span>
+                <span class="topic-badge">PLM for Defense Contractors</span>
+            </div>
+            <div style="margin-top: 30px;">
+                <a href="#newsletter" class="btn btn-primary">Subscribe for Updates</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Let's Connect</h2>
+                <p>Schedule a consultation with our engineering technology experts</p>
+            </div>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>How We Can Help</h3>
+                    <p>Our team brings unique experience from Silicon Valley leaders to industrial manufacturing plants. We offer:</p>
+                    <ul>
+                        <li>PLM implementation strategy and roadmapping</li>
+                        <li>Engineering process optimization</li>
+                        <li>Digital thread implementation</li>
+                        <li>Custom development for specialized industries</li>
+                        <li>Technology selection and vendor management</li>
+                    </ul>
+                    <p>Reach out today to discuss your specific challenges.</p>
+                </div>
+                <div class="contact-form">
+                    <!-- <form> -->
+                    <form  action="https://formspree.io/f/mdkewzol"
+                        method="POST" id="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" name="phone" id="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="company" class="form-label">Company</label>
+                            <input type="text" name="company" id="company" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="form-label">Job Title</label>
+                            <input type="text" name="title" id="title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">How can we help?</label>
+                            <textarea name="message" id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section id="newsletter" class="newsletter">
+        <div class="container">
+            <h2>Get Engineering Technology Insights</h2>
+            <p>Be the first to receive our upcoming content on PLM strategy, digital transformation, and industry-specific engineering solutions.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>GompaTech</h3>
+                    <p>Engineering technology expertise from Silicon Valley to the shop floor.</p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/company/gompatech" class="social-icon">in</a>
+                        <a href="#" class="social-icon">tw</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Industries</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#">Aerospace</a></li>
+                        <li class="footer-link"><a href="#">Automotive</a></li>
+                        <li class="footer-link"><a href="#">Medical Devices</a></li>
+                        <li class="footer-link"><a href="#">Manufacturing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#contact">Get in Touch</a></li>
+                        <!-- <li class="footer-link"><a href="#newsletter">Subscribe</a></li> -->
+                        <li class="footer-link">team@gompatech.com</li> 
+                        <li class="footer-link">+1 (650) 450-8263</li>
+                        <li class="footer-link">+91 (913) 116-3733</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 GompaTech. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mobile menu toggle
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

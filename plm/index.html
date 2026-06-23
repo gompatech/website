@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en"
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gPLM - Expert Product Lifecycle Management Services</title>
+    <style>
+        :root {
+            --primary-blue: #1a4b8c;
+            --light-blue: #2c6bbd;
+            --dark-blue: #0d2a52;
+            --accent-green: #2ecc71;
+            --dark-green: #27ae60;
+            --base-grey: #f4f6f8;
+            --dark-grey: #2c3e50;
+            --light-grey: #ecf0f1;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--white);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--accent-green);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-green);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-green);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary-blue);
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .section-title p {
+            color: var(--dark-grey);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--base-grey);
+            padding: 30px;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card h3 {
+            margin: 20px 0 10px;
+            color: var(--dark-blue);
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            background-color: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+        }
+        
+        /* Why Us Section */
+        .why-us {
+            padding: 80px 0;
+            background-color: var(--base-grey);
+        }
+        
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .expertise-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .expertise-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        
+        /* Pain Points Section */
+        .pain-points {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            color: var(--white);
+        }
+        .pain-points p {
+            color: var(--light-grey);
+        }
+        .pain-points h2 {
+            color: var(--white);
+        }
+        
+        .pain-points-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .pain-point-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pain-point-card h3 {
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+        
+        /* Benefits Section */
+        .benefits {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .benefits-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .benefit-card {
+            padding: 30px;
+            border-radius: 5px;
+            border-left: 4px solid var(--accent-green);
+            background-color: var(--base-grey);
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .benefit-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        
+        /* Contact Form Section */
+        .contact {
+            padding: 80px 0;
+            background-color: var(--base-grey);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-grey);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.2);
+        }
+        
+        .submit-button {
+            background-color: var(--accent-green);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--dark-green);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-grey);
+            color: var(--light-grey);
+            padding: 40px 0;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-col h3 {
+            color: var(--white);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col ul li a {
+            color: var(--light-grey);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--accent-green);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 5px 10px;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.75rem;
+            }
+            
+            .services, .why-us, .pain-points, .benefits, .contact {
+                padding: 60px 0;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+        .required {
+                color: red;
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+            
+            .services-grid, .expertise-grid, .pain-points-container, .benefits-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">g<span>PLM</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#why-us">Why Us</a></li>
+                    <li><a href="#pain-points">Challenges</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Transform Your Product Lifecycle Management</h1>
+            <p>Expert PLM services designed for enterprise leaders looking to maximize ROI, streamline workflows, and gain competitive advantages through optimized PLM implementation.</p>
+            <a href="#contact" class="cta-button">Schedule a Discovery Call</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Services</h2>
+                <p>Comprehensive PLM solutions tailored to your enterprise needs</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">C</div>
+                    <h3>Consulting</h3>
+                    <p>Strategic PLM advisory to align technology with business objectives</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">G</div>
+                    <h3>Green-field Implementation</h3>
+                    <p>New PLM deployments with best practices from day one</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">B</div>
+                    <h3>Brown-field Implementation</h3>
+                    <p>Seamless integration with existing PLM infrastructure</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">C</div>
+                    <h3>Configuration & Customization</h3>
+                    <p>Tailored solutions to meet your unique business requirements</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">D</div>
+                    <h3>Decustomization</h3>
+                    <p>Streamline complex environments for better maintainability</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">U</div>
+                    <h3>Upgrades</h3>
+                    <p>Smooth transitions to the latest PLM capabilities</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">I</div>
+                    <h3>Legacy Systems Integration</h3>
+                    <p>Connect and harmonize all your product development data</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">T</div>
+                    <h3>Training</h3>
+                    <p>Equip your team with the skills to maximize PLM value</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">A</div>
+                    <h3>Administration</h3>
+                    <p>Ongoing support to ensure optimal PLM performance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="why-us" id="why-us">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose gPLM</h2>
+                <p>We bring unparalleled expertise to your PLM transformation journey</p>
+            </div>
+            <div class="expertise-grid">
+                <div class="expertise-card">
+                    <h3>Elite Expertise</h3>
+                    <p>Our team includes PLM specialists who have led successful implementations at Google, Boeing, and major US automotive and energy OEMs.</p>
+                </div>
+                <div class="expertise-card">
+                    <h3>Industry-Specific Knowledge</h3>
+                    <p>We understand the unique challenges facing different industries and tailor our approach to your specific needs.</p>
+                </div>
+                <div class="expertise-card">
+                    <h3>Proven Methodology</h3>
+                    <p>Our implementation approach minimizes risk while maximizing value delivery throughout your PLM transformation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pain Points Section -->
+    <section class="pain-points" id="pain-points">
+        <div class="container">
+            <div class="section-title">
+                <h2>Challenges We Solve</h2>
+                <p>Common PLM obstacles that impact your bottom line</p>
+            </div>
+            <div class="pain-points-container">
+                <div class="pain-point-card">
+                    <h3>Measuring PLM ROI</h3>
+                    <p>Difficulty quantifying the return on your substantial PLM investments leads to uncertainty in decision-making and budget allocation.</p>
+                </div>
+                <div class="pain-point-card">
+                    <h3>Inefficient Workflows</h3>
+                    <p>Cumbersome product development processes create bottlenecks that slow time-to-market and impact your competitive position.</p>
+                </div>
+                <div class="pain-point-card">
+                    <h3>Outdated Capabilities</h3>
+                    <p>Legacy PLM systems that can't support modern design practices create strategic disadvantages in a digital-first marketplace.</p>
+                </div>
+                <div class="pain-point-card">
+                    <h3>Migration Complexity</h3>
+                    <p>Moving from legacy systems to cloud-based PLM brings high costs and significant risks without expert guidance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <div class="container">
+            <div class="section-title">
+                <h2>Strategic Benefits</h2>
+                <p>How our solutions drive measurable business impact</p>
+            </div>
+            <div class="benefits-container">
+                <div class="benefit-card">
+                    <h3>Digital Transformation</h3>
+                    <p>Accelerate your digital journey with modern PLM capabilities that support innovation and collaboration across global teams.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Competitive Advantage</h3>
+                    <p>Gain market edge through streamlined product development processes that bring better products to market faster.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Cost Optimization</h3>
+                    <p>Reduce operational expenses through efficient workflows, reduced errors, and optimized design and manufacturing processes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Ready to Transform Your PLM?</h2>
+                <p>Schedule a discovery call with our experts</p>
+            </div>
+            <div class="form-container">
+                <!-- <form id="contact-form"> -->
+                <form  action="https://formspree.io/f/mdkewzol"
+                    method="POST" id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name<span class="required">*</span></label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address<span class="required">*</span></label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number<span class="required">*</span></label>
+                        <input type="tel" name="phone" id="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <input type="text" name="company" id="company" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" name="title" id="title" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea name="message" name="message" id="message" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Schedule a Discovery Call</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>gPLM</h3>
+                    <ul>
+                        <li><a href="#services">Our Services</a></li>
+                        <li><a href="#why-us">Why Choose Us</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Consulting</a></li>
+                        <li><a href="#">Implementation</a></li>
+                        <li><a href="#">Training</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>team@gompatech.com</li>
+                        <li>+1 (650) 450-8263</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 gPLM. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
