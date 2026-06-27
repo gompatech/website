@@ -1,0 +1,981 @@
+<!-- https://claude.ai/chat/a684a788-0e15-4253-b05b-a054382d10df -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Foundry Intelligence — GompaTech</title>
+<meta name="description" content="Real-time process intelligence for Indian foundries. Stop SOP deviations before they become customer rejections. GompaTech, Ujjain, Madhya Pradesh.">
+<meta property="og:title" content="Foundry Intelligence — GompaTech">
+<meta property="og:description" content="Melt Fast. Pour Fast. Zero Defects. Real-time process intelligence built for Indian foundries.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.gompatech.com/foundry">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   DESIGN TOKENS
+================================================================ */
+:root {
+  --bg:          #0F0D0B;
+  --bg-alt:      #141210;
+  --bg-card:     #1B1814;
+  --accent:      #E07818;
+  --accent-dark: #5C2E06;
+  --accent-glow: rgba(224,120,24,0.08);
+  --text:        #F0EDE8;
+  --muted:       #928B83;
+  --border:      #252220;
+  --fd:          'Big Shoulders Display', sans-serif;
+  --fb:          'DM Sans', sans-serif;
+}
+
+/* ================================================================
+   BASE RESET
+================================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 56px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--fb);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ================================================================
+   NAV
+================================================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid transparent;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.nav.scrolled {
+  background: rgba(15,13,11,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--border);
+}
+.nav-logo {
+  font-family: var(--fd);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+.nav-logo span { color: var(--accent); }
+.nav-talk {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--fb);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 3px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.nav-talk:active { background: #b86010; }
+
+/* ================================================================
+   HERO — the signature element
+   Giant stacked type. No image. Pure industrial confidence.
+================================================================ */
+.hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 72px 22px 52px;
+  position: relative;
+}
+/* Ambient heat atmosphere — top glow */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 45%;
+  background: radial-gradient(ellipse 90% 60% at 50% -5%,
+    rgba(224,120,24,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+/* The molten line — separates hero from body */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--accent) 30%, var(--accent) 70%, transparent 100%);
+  opacity: 0.5;
+}
+.hero-eye {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+/* The hero tagline — dominant, stencil-industrial */
+.hero-tag {
+  font-family: var(--fd);
+  font-weight: 900;
+  font-size: clamp(50px, 13.5vw, 84px);
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+.hero-tag .hl { color: var(--accent); }
+.hero-body {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 310px;
+  margin-bottom: 38px;
+}
+.hero-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--fb);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-main:active { background: #b86010; }
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--fb);
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:active { border-color: var(--muted); color: var(--text); }
+
+/* ================================================================
+   SECTIONS — shared
+================================================================ */
+.sec {
+  padding: 64px 22px;
+}
+.sec-alt {
+  background: var(--bg-alt);
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.sec-title {
+  font-family: var(--fd);
+  font-weight: 900;
+  font-size: clamp(34px, 9vw, 52px);
+  text-transform: uppercase;
+  line-height: 1.0;
+  letter-spacing: 0.01em;
+  margin-bottom: 30px;
+}
+
+/* ================================================================
+   PROBLEM
+================================================================ */
+.problem-text p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.problem-text p + p { margin-top: 14px; }
+.problem-text strong { color: var(--text); font-weight: 500; }
+
+/* ================================================================
+   OUTCOMES (What We Do) — three tier cards
+================================================================ */
+.outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.oc {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 22px 18px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.oc.vis { opacity: 1; transform: none; }
+.oc-num {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.oc-name {
+  font-family: var(--fd);
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+.oc-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ================================================================
+   USE CASES
+================================================================ */
+.uc-list { list-style: none; }
+.uc-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.uc-item:first-child { border-top: 1px solid var(--border); }
+.uc-item.vis { opacity: 1; transform: none; }
+.uc-arr { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+/* ================================================================
+   HOW IT WORKS
+================================================================ */
+.steps { display: flex; flex-direction: column; }
+.step {
+  display: flex;
+  gap: 18px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+.step:first-child { border-top: 1px solid var(--border); }
+.step-n {
+  font-family: var(--fd);
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--accent-dark);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 30px;
+  opacity: 0.75;
+}
+.step-label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.step-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ================================================================
+   PROOF
+================================================================ */
+.proof-quote {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text);
+  padding-left: 16px;
+  border-left: 2px solid var(--accent);
+  margin-bottom: 8px;
+}
+.proof-note {
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  padding-left: 18px;
+  margin-bottom: 32px;
+}
+.proof-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.pstat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 18px 10px;
+  text-align: center;
+}
+.pstat-v {
+  font-family: var(--fd);
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--accent);
+  display: block;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.pstat-l {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* ================================================================
+   WHY
+================================================================ */
+.why-items { display: flex; flex-direction: column; gap: 20px; }
+.why-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.why-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 9px;
+}
+.why-text {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.why-text strong { color: var(--text); font-weight: 500; }
+
+/* ================================================================
+   CONTACT
+================================================================ */
+.contact-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 30px;
+}
+.form { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.field input,
+.field textarea {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--fb);
+  font-size: 15px;
+  padding: 13px 14px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.field input:focus,
+.field textarea:focus { border-color: var(--accent); }
+.field input.err { border-color: #e05050; }
+.field input::placeholder,
+.field textarea::placeholder { color: var(--muted); opacity: 0.4; }
+.field textarea { resize: vertical; min-height: 90px; }
+.btn-submit {
+  width: 100%;
+  height: 52px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--fb);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.2s;
+}
+.btn-submit:active { background: #b86010; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.or-sep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.or-sep::before,
+.or-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.btn-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  background: rgba(37,162,68,0.09);
+  border: 1px solid rgba(37,162,68,0.3);
+  color: #4cd97b;
+  font-family: var(--fb);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-wa:active { background: rgba(37,162,68,0.16); }
+.wa-ico {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Success state */
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 48px 0 20px;
+}
+.form-success.show { display: block; }
+.success-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  font-size: 22px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.success-h {
+  font-family: var(--fd);
+  font-size: 34px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.success-p {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* ================================================================
+   FOOTER
+================================================================ */
+.footer {
+  padding: 30px 22px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-logo {
+  font-family: var(--fd);
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.footer-logo span { color: var(--accent); }
+.footer-tag {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  margin-bottom: 14px;
+}
+.footer-links a { font-size: 13px; color: var(--muted); }
+.footer-copy { font-size: 12px; color: var(--border); color: #3D3835; }
+
+/* ================================================================
+   SCROLL REVEAL — generic
+================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.vis { opacity: 1; transform: none; }
+
+/* ================================================================
+   DESKTOP
+================================================================ */
+@media (min-width: 680px) {
+  .hero { padding: 100px 40px 64px; }
+  .hero-ctas { flex-direction: row; }
+  .btn-main { min-width: 180px; }
+  .btn-ghost { min-width: 160px; }
+  .sec { padding: 80px 40px; }
+  .outcomes { flex-direction: row; }
+  .oc { flex: 1; }
+}
+@media (min-width: 1024px) {
+  .hero { padding: 120px 80px 80px; }
+  .sec { padding: 96px 80px; max-width: 800px; margin: 0 auto; }
+  .sec-alt { max-width: none; padding: 96px 80px; }
+  .sec-alt .inner { max-width: 800px; margin: 0 auto; }
+  #contact { max-width: none; padding: 96px 80px; }
+  #contact .inner { max-width: 540px; margin: 0 auto; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .oc, .uc-item { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
+<nav class="nav" id="nav" aria-label="Site navigation">
+  <a href="https://www.gompatech.com" class="nav-logo">Gompa<span>Tech</span></a>
+  <a href="#contact" class="nav-talk">Talk to Us</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<header class="hero" id="top">
+  <p class="hero-eye">Foundry Intelligence</p>
+  <h1 class="hero-tag">
+    Melt Fast.<br>
+    Pour Fast.<br>
+    <span class="hl">Zero&nbsp;Defects.</span>
+  </h1>
+  <p class="hero-body">
+    Real-time process intelligence for Indian foundries — built to stop losses at the source, before they reach your customer.
+  </p>
+  <div class="hero-ctas">
+    <a href="#contact" class="btn-main">Request a Demo</a>
+    <a href="#outcomes" class="btn-ghost">See How It Works</a>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════
+     PROBLEM
+═══════════════════════════════════════ -->
+<section class="sec" id="problem" aria-labelledby="problem-h">
+  <p class="eyebrow reveal">The Cost of Not Knowing</p>
+  <div class="problem-text">
+    <p class="reveal">Your process deviations don't announce themselves. A missed step, an out-of-spec addition, a brief lapse — and the first sign is a rejection call from your customer. By then, the costs have already compounded: <strong>containment, rework, RCA, expedited replacements, and the audit that follows.</strong></p>
+    <p class="reveal">Without a digital record, your team is forced to hypothesize about what actually happened at that heat, that shift, that moment. That cycle — of recreation, investigation, customer back-and-forth — can stretch for months.</p>
+    <p class="reveal">And today, your customers are keeping score on your <strong>digital maturity and traceability.</strong> That score decides who gets the next order.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     OUTCOMES (What We Do)
+═══════════════════════════════════════ -->
+<section class="sec sec-alt" id="outcomes" aria-labelledby="outcomes-h">
+  <div class="inner">
+    <p class="eyebrow reveal">What We Do</p>
+    <h2 class="sec-title reveal" id="outcomes-h">Three Layers.<br>One System.</h2>
+    <div class="outcomes">
+      <div class="oc">
+        <p class="oc-num">01 — CONTAIN</p>
+        <h3 class="oc-name">Stop it before it's cast</h3>
+        <p class="oc-desc">Real-time monitoring of your critical process steps. The moment a deviation is detected, your line crew gets an instant alert — before the heat is poured, before a defect is set in metal.</p>
+      </div>
+      <div class="oc">
+        <p class="oc-num">02 — EVIDENCE</p>
+        <h3 class="oc-name">Replace guesswork with proof</h3>
+        <p class="oc-desc">Every heat, every shift — automatically timestamped and logged. When a customer questions a batch, your answer is a data export. Not a hypothesis.</p>
+      </div>
+      <div class="oc">
+        <p class="oc-num">03 — OPTIMIZE</p>
+        <h3 class="oc-name">Find what's costing you</h3>
+        <p class="oc-desc">Correlate process parameters with rejection outcomes over time. Data-driven insight into what drives quality and what drives waste — no expensive floor experiments needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     USE CASES
+═══════════════════════════════════════ -->
+<section class="sec" id="usecases" aria-labelledby="uc-h">
+  <p class="eyebrow reveal">Where It Creates Value</p>
+  <h2 class="sec-title reveal" id="uc-h">Real Problems.<br>Real Outcomes.</h2>
+  <ul class="uc-list" role="list">
+    <li class="uc-item">
+      <span class="uc-arr" aria-hidden="true">→</span>
+      Prevent defective parts from ever reaching your customer
+    </li>
+    <li class="uc-item">
+      <span class="uc-arr" aria-hidden="true">→</span>
+      Cut your RCA cycle from months to hours
+    </li>
+    <li class="uc-item">
+      <span class="uc-arr" aria-hidden="true">→</span>
+      Walk into customer audits with evidence, not explanations
+    </li>
+    <li class="uc-item">
+      <span class="uc-arr" aria-hidden="true">→</span>
+      Recover lost production capacity — more heats from your existing floor
+    </li>
+    <li class="uc-item">
+      <span class="uc-arr" aria-hidden="true">→</span>
+      Build the digital maturity that opens high-margin and export markets
+    </li>
+  </ul>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════ -->
+<section class="sec sec-alt" id="how" aria-labelledby="how-h">
+  <div class="inner">
+    <p class="eyebrow reveal">How It Works</p>
+    <h2 class="sec-title reveal" id="how-h">Built for the<br>Shop Floor.</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-n" aria-hidden="true">1</div>
+        <div>
+          <p class="step-label">We install at your critical process points</p>
+          <p class="step-desc">Sensors and cameras placed at the areas that carry the most risk. No disruption to your existing equipment or workflow.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-n" aria-hidden="true">2</div>
+        <div>
+          <p class="step-label">The system watches every heat, every shift</p>
+          <p class="step-desc">Continuous automated monitoring. No operator data entry. No reliance on manual logs or individual memory.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-n" aria-hidden="true">3</div>
+        <div>
+          <p class="step-label">Deviations trigger an instant floor alert</p>
+          <p class="step-desc">An audible alarm sounds at the production line the moment a deviation is detected. Every event is timestamped and logged — automatically building your evidence and optimization layers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     PROOF
+═══════════════════════════════════════ -->
+<section class="sec" id="proof" aria-labelledby="proof-h">
+  <p class="eyebrow reveal">Proven on the Production Floor</p>
+  <blockquote class="proof-quote reveal">
+    GompaTech's system was developed and validated through a 4-month live pilot at an active foundry in Madhya Pradesh — supplying Tier-1 OEMs in agricultural and industrial equipment. The system successfully detected SOP deviations in real-time, triggering production-line alerts before defective material could progress. The technology was validated by the foundry's quality laboratory and demonstrated to plant management.
+  </blockquote>
+  <p class="proof-note reveal">This wasn't built in a lab. It was built on the shop floor.</p>
+  <div class="proof-stats reveal">
+    <div class="pstat">
+      <span class="pstat-v">4</span>
+      <span class="pstat-l">Month live pilot</span>
+    </div>
+    <div class="pstat">
+      <span class="pstat-v">0</span>
+      <span class="pstat-l">Dedicated operators needed</span>
+    </div>
+    <div class="pstat">
+      <span class="pstat-v">24/7</span>
+      <span class="pstat-l">Automated floor monitoring</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     WHY GOMPATECH
+═══════════════════════════════════════ -->
+<section class="sec sec-alt" id="why" aria-labelledby="why-h">
+  <div class="inner">
+    <p class="eyebrow reveal">Why GompaTech</p>
+    <h2 class="sec-title reveal" id="why-h">Close. Capable.<br>Ready.</h2>
+    <div class="why-items">
+      <div class="why-item reveal">
+        <div class="why-dot" aria-hidden="true"></div>
+        <p class="why-text"><strong>Locally present.</strong> Ujjain-based — we can be on your floor when it matters, not just on a call.</p>
+      </div>
+      <div class="why-item reveal">
+        <div class="why-dot" aria-hidden="true"></div>
+        <p class="why-text"><strong>Self-contained system.</strong> No IT department, no dedicated operators, no disruption to how you already run.</p>
+      </div>
+      <div class="why-item reveal">
+        <div class="why-dot" aria-hidden="true"></div>
+        <p class="why-text"><strong>Start where it hurts most.</strong> Begin with your highest-risk process area, prove the value, and scale on your terms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════ -->
+<section class="sec" id="contact" aria-labelledby="contact-h">
+  <div class="inner">
+    <p class="eyebrow reveal">Get in Touch</p>
+    <h2 class="sec-title reveal" id="contact-h">See What Your<br>Floor Is<br>Missing.</h2>
+    <p class="contact-sub reveal">Tell us about your plant and your process challenges. No obligation — just a conversation.</p>
+
+    <!-- Form wrapper -->
+    <div id="fw">
+
+      <form class="form" id="cform" novalidate>
+        <div class="field">
+          <label for="fn">Your Name</label>
+          <input type="text" id="fn" name="name" placeholder="Name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="fc">Foundry / Company</label>
+          <input type="text" id="fc" name="company" placeholder="Company name" required autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="fp">Phone / WhatsApp</label>
+          <input type="tel" id="fp" name="phone" placeholder="+91 XXXXX XXXXX" required autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="fm">
+            Biggest process challenge?
+            <span style="font-weight:400;text-transform:none;letter-spacing:0"> (optional)</span>
+          </label>
+          <textarea id="fm" name="message" placeholder="e.g. customer rejections, RCA cycles, audit pressure, rejection rates…"></textarea>
+        </div>
+        <!--
+          CONFIGURE: Sign up at formspree.io, create a form, get your ID.
+          Replace YOUR_FORM_ID in the JS below with your actual Formspree ID.
+          Or swap ENDPOINT for your own backend URL.
+        -->
+        <button type="submit" class="btn-submit" id="sbtn">
+          Send — We'll respond within 24 hours
+        </button>
+      </form>
+
+      <div class="or-sep">or</div>
+
+      <!--
+        CONFIGURE: Replace 91XXXXXXXXXX with your WhatsApp number.
+        Format: country code + number, no + sign, no spaces.
+        Example for +91 98270 00000 → 919827000000
+      -->
+      <a href="https://wa.me/91XXXXXXXXXX?text=Hi%20GompaTech%2C%20I%20visited%20your%20Foundry%20Intelligence%20page%20and%20I%27d%20like%20to%20learn%20more%20about%20your%20solutions.%20Can%20we%20have%20a%20quick%20conversation%3F"
+         class="btn-wa"
+         target="_blank"
+         rel="noopener noreferrer">
+        <svg class="wa-ico" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Chat on WhatsApp
+      </a>
+    </div><!-- /#fw -->
+
+    <!-- Success state -->
+    <div class="form-success" id="fsuccess" role="status" aria-live="polite">
+      <div class="success-ring" aria-hidden="true">✓</div>
+      <p class="success-h">Got it.</p>
+      <p class="success-p">We'll reach out within 24 hours.<br>For a faster reply, WhatsApp us directly.</p>
+      <a href="https://wa.me/91XXXXXXXXXX?text=Hi%20GompaTech%2C%20I%20just%20sent%20you%20a%20message%20from%20your%20website."
+         class="btn-wa"
+         target="_blank"
+         rel="noopener noreferrer">
+        <svg class="wa-ico" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        WhatsApp us directly
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="footer">
+  <p class="footer-logo">Gompa<span>Tech</span></p>
+  <p class="footer-tag">Melt Fast · Pour Fast · Zero Defects</p>
+  <nav class="footer-links" aria-label="Footer links">
+    <a href="https://www.gompatech.com">Main Site</a>
+    <a href="mailto:info@gompatech.com">Email</a>
+  </nav>
+  <p class="footer-copy">© 2026 Gompa Technologies · Ujjain, Madhya Pradesh, India</p>
+</footer>
+
+
+<script>
+'use strict';
+
+/* ── Nav scroll ─────────────────────────────────── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 28);
+}, { passive: true });
+
+/* ── Intersection observer — scroll reveals ─────── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+
+    /* Stagger siblings within the same parent */
+    const siblings = Array.from(el.parentElement.children)
+      .filter(c => c.classList.contains('reveal') ||
+                   c.classList.contains('oc')      ||
+                   c.classList.contains('uc-item') ||
+                   c.classList.contains('why-item'));
+    const idx = siblings.indexOf(el);
+    const delay = Math.min(idx * 75, 300);
+
+    setTimeout(() => el.classList.add('vis'), delay);
+    io.unobserve(el);
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+
+document.querySelectorAll('.reveal, .oc, .uc-item, .why-item')
+  .forEach(el => io.observe(el));
+
+/* ── Contact form ───────────────────────────────── */
+const form    = document.getElementById('cform');
+const fw      = document.getElementById('fw');
+const success = document.getElementById('fsuccess');
+const sbtn    = document.getElementById('sbtn');
+
+/* Required fields */
+const required = [
+  { id: 'fn', name: 'name'    },
+  { id: 'fc', name: 'company' },
+  { id: 'fp', name: 'phone'   },
+];
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  /* Validate */
+  let valid = true;
+  required.forEach(({ id }) => {
+    const inp = document.getElementById(id);
+    const empty = !inp.value.trim();
+    inp.classList.toggle('err', empty);
+    if (empty) {
+      valid = false;
+      inp.addEventListener('input', () => inp.classList.remove('err'), { once: true });
+    }
+  });
+  if (!valid) return;
+
+  sbtn.textContent = 'Sending…';
+  sbtn.disabled = true;
+
+  const data = new FormData(form);
+
+  /*
+    ── CONFIGURE YOUR ENDPOINT ──────────────────────
+    Option A (Formspree — recommended):
+      1. Go to formspree.io and create a free account
+      2. Create a new form and copy your Form ID
+      3. Replace YOUR_FORM_ID below with that ID
+         e.g. 'https://formspree.io/f/xkndpwqr'
+
+    Option B (your own backend):
+      Replace ENDPOINT with your API URL.
+  */
+  const ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+  try {
+    if (ENDPOINT.includes('YOUR_FORM_ID')) {
+      /* Formspree not yet configured — fallback to mailto */
+      throw new Error('unconfigured');
+    }
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error('http-error');
+    showSuccess();
+
+  } catch {
+    /* ── Mailto fallback ─────────────────────────── */
+    const n = data.get('name')    || '';
+    const c = data.get('company') || '';
+    const p = data.get('phone')   || '';
+    const m = data.get('message') || '';
+    const body = encodeURIComponent(
+      `Name: ${n}\nCompany: ${c}\nPhone: ${p}\n\nChallenge / Message:\n${m}`
+    );
+    window.location.href =
+      `mailto:info@gompatech.com?subject=Foundry%20Intelligence%20Enquiry&body=${body}`;
+
+    sbtn.textContent = "Send — We'll respond within 24 hours";
+    sbtn.disabled = false;
+  }
+});
+
+function showSuccess() {
+  fw.style.display = 'none';
+  success.classList.add('show');
+  success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>
+
+</body>
+</html>
