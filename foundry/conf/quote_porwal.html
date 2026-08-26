@@ -1,0 +1,193 @@
+<!--
+================================================================================
+Title: Protected Landscape PDF Viewer
+Purpose/Features:
+  - Renders a single-page landscape PDF onto an HTML5 Canvas using PDF.js.
+  - Mitigates casual downloading by eliminating native PDF viewer toolbars,
+    disabling right-click context menus, drag actions, and common key shortcuts (Ctrl+S, Ctrl+U).
+  - Preserves full browser print fidelity (File -> Print / Ctrl+P) via dedicated 
+    @media print landscape CSS rules.
+Revision History:
+  - Version: 1.0.0
+  - Date: 2026-08-26
+  - Author: SDS
+  - Changes: Initial implementation with PDF.js canvas rendering and print-safe CSS.
+================================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landscape PDF Viewer</title>
+  
+  <!-- PDF.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    /* Reset & Viewport Constraints */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none; /* Prevents casual text selection */
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #2b2b2b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .viewer-container {
+      position: relative;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Screen display styling */
+    #pdf-canvas {
+      display: block;
+      max-width: 95vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      background-color: #ffffff;
+    }
+
+    /* Loading overlay */
+    #loading-state {
+      position: absolute;
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* ==========================================================================
+       Print Optimization Rules (File -> Print or Ctrl+P)
+       ========================================================================== */
+    @page {
+      size: landscape;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background-color: transparent !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .viewer-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
+      #pdf-canvas {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+
+      #loading-state {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="viewer-container">
+    <div id="loading-state">Loading document...</div>
+    <canvas id="pdf-canvas"></canvas>
+  </div>
+
+  <script>
+    // Configure PDF.js Worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // Target PDF URL or Base64 String
+    const PDF_SOURCE = './doc_quote.pdf'; 
+    // const PDF_SOURCE = 'sample-landscape.pdf'; 
+
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+    const loadingState = document.getElementById('loading-state');
+
+    async function loadLandscapePdf(source) {
+      try {
+        const loadingTask = pdfjsLib.getDocument(source);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        // Render at high-DPI resolution for sharp screen display and crisp print output
+        const pixelRatio = window.devicePixelRatio || 2;
+        const viewport = page.getViewport({ scale: 2.0 * pixelRatio });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+
+        await page.render(renderContext).promise;
+        loadingState.style.display = 'none';
+      } catch (err) {
+        console.error('Error rendering PDF:', err);
+        loadingState.textContent = 'Failed to load PDF document.';
+      }
+    }
+
+    // =========================================================================
+    // Anti-Download & Tamper Prevention Measures
+    // =========================================================================
+
+    // 1. Disable Right-Click Context Menu
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    }, false);
+
+    // 2. Disable Image Dragging
+    canvas.addEventListener('dragstart', (e) => {
+      e.preventDefault();
+    });
+
+    // 3. Intercept common save and source-inspection shortcuts (Ctrl+S, Ctrl+U, etc.)
+    // Note: Ctrl+P is intentionally allowed for printing.
+    window.addEventListener('keydown', (e) => {
+      const isModifier = e.ctrlKey || e.metaKey; // Windows Ctrl or Mac Cmd
+
+      if (isModifier) {
+        switch (e.key.toLowerCase()) {
+          case 's': // Save Page
+          case 'u': // View Source
+            e.preventDefault();
+            break;
+        }
+      }
+    }, false);
+
+    // Initialize document render
+    loadLandscapePdf(PDF_SOURCE);
+  </script>
+</body>
+</html>
