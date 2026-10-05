@@ -1,0 +1,28 @@
+<!--
+==============================================================================
+Title:           Foundry Visiting Card QR Redirect
+Purpose/Features: Static client-side redirect under /qr/ namespace routing 
+                  /qr/vcardfoundry to /foundry with UTM campaign attribution tags.
+		  Initially made for Wescon2026
+Revision History:
+  Version: 1.0
+  Date:    2026-10-05
+  Author:  SDS
+  Changes: Configured namespaced redirect for vcardfoundry
+==============================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=https://www.gompatech.com/foundry?utm_source=visiting_card&utm_medium=qr&utm_campaign=foundry">
+  <link rel="canonical" href="https://www.gompatech.com/foundry">
+  <title>Redirecting to GompaTech Foundry...</title>
+  <script>
+    window.location.replace("https://www.gompatech.com/foundry?utm_source=visiting_card&utm_medium=qr&utm_campaign=foundry");
+  </script>
+</head>
+<body>
+  <p>Redirecting to <a href="https://www.gompatech.com/foundry?utm_source=visiting_card&utm_medium=qr&utm_campaign=foundry">GompaTech Foundry</a>...</p>
+</body>
+</html>
